@@ -7,7 +7,9 @@ app.controller('musicController', function($scope) {
 
 		MIDI.loadPlugin({
 		soundfontUrl: "MIDI.js/examples/soundfont/",
-		instrument: "acoustic_grand_piano",
+		// instrument: "acoustic_grand_piano",
+		instruments : ["acoustic_grand_piano", "synth_drum" ],
+
 		onprogress: function(state, progress) {
 			console.log(state, progress);
 		},
@@ -20,10 +22,22 @@ app.controller('musicController', function($scope) {
 				// play the note
 				MIDI.setVolume(0, 127);
 				
-				MIDI.noteOn(0, note, velocity, delay);
-				MIDI.noteOff(0, note, delay + 0.75);
-				MIDI.noteOn(0, 51, velocity, delay);
-				MIDI.noteOff(0, 51, delay + 0.75);				
+				var r = CustomRandom($scope.seed);
+
+				var noteGen = function() { return Math.floor(r.next(50, 60));};
+				var playNote = function() {
+					var n = noteGen();
+					MIDI.noteOn(0, n, velocity, delay);
+					MIDI.noteOff(0, n, delay + 0.75);
+				}
+
+				MIDI.programChange(0, MIDI.GM.byName["acoustic_grand_piano"].number);
+				playNote();
+				playNote();
+
+				MIDI.programChange(0, MIDI.GM.byName["synth_drum"].number);
+				playNote();
+				playNote();
 			}
 
 			$scope.play = playSound;
