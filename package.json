@@ -1,0 +1,32 @@
+{
+  "name": "RandomMusicCompo",
+  "version": "0.0.0",
+  "description": "Random music composition, yay!",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Random",
+    "Music",
+    "Composition"
+  ],
+  "author": "hcaoab",
+  "license": "UNLICENSED",
+  "contributors": [
+    {
+      "name": "Hengrui CAO"
+    },
+    {
+      "name": "Karina"
+    }
+  ],
+  "files": [
+    "MIDI.js"
+  ],
+  "dependencies": {
+    "express": "^4.13.3",
+    "morgan": "^1.6.1"
+  }
+}
