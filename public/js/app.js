@@ -1,12 +1,34 @@
-var app = angular.module('app', []);
+var app = angular.module('app', ['ngRoute']);
+
+app.config(function($routeProvider){
+	$routeProvider
+		.when('/test', {templateUrl: 'templates/test.html', controller: 'musicController'})
+    	.otherwise({redirectTo: '/test'});
+});
+
+
 app.controller('musicController', function($scope) {
+
+	$scope.maxVolume = 127;
+	$scope.minVolume = 0;
+	$scope.volume = 127;
+	$scope.volume_percentage = '100%';
+	$scope.$watch('volume', function(newVal, oldVal){
+		if (newVal != oldVal)
+		{
+			MIDI.setVolume(0, newVal);
+	    	$scope.volume = newVal;
+	    	$scope.volume_percentage = Math.floor(($scope.volume - $scope.minVolume) /
+	    		($scope.maxVolume - $scope.minVolume) * 100) + '%';
+		}
+	});
 
 	$scope.init = function (){
 		console.log("Initialising");
 
 
 		MIDI.loadPlugin({
-		soundfontUrl: "MIDI.js/examples/soundfont/",
+		soundfontUrl: "res/FluidR3_GM/",
 		// instrument: "acoustic_grand_piano",
 		instruments : ["acoustic_grand_piano", "synth_drum" ],
 
@@ -20,7 +42,7 @@ app.controller('musicController', function($scope) {
 				var note = 50; // the MIDI note
 				var velocity = 127; // how hard the note hits
 				// play the note
-				MIDI.setVolume(0, 127);
+				MIDI.setVolume(0, $scope.volume);
 				
 				var r = CustomRandom($scope.seed);
 
@@ -46,7 +68,7 @@ app.controller('musicController', function($scope) {
 		});
 	};
 
-
+	$scope.init();
 
 	$scope.refreshSeed = function(){
 		$scope.seed = Math.floor(Math.random() * 10000 + 1);
