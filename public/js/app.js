@@ -13,6 +13,9 @@ app.controller('musicController', function($scope) {
 	$scope.minVolume = 0;
 	$scope.volume = 127;
 	$scope.volume_percentage = '100%';
+	$scope.not_initialised = true;
+	$scope.delay_time = 1000;
+
 	$scope.$watch('volume', function(newVal, oldVal){
 		if (newVal != oldVal)
 		{
@@ -36,34 +39,10 @@ app.controller('musicController', function($scope) {
 			console.log(state, progress);
 		},
 		onsuccess: function() {
-
-			function playSound() {
-				var delay = 1; // play one note every quarter second
-				var note = 50; // the MIDI note
-				var velocity = 127; // how hard the note hits
-				// play the note
-				MIDI.setVolume(0, $scope.volume);
-				
-				var r = CustomRandom($scope.seed);
-
-				var noteGen = function() { return Math.floor(r.next(50, 60));};
-				var playNote = function() {
-					var n = noteGen();
-					MIDI.noteOn(0, n, velocity, delay);
-					MIDI.noteOff(0, n, delay + 0.75);
-				}
-
-				MIDI.programChange(0, MIDI.GM.byName["acoustic_grand_piano"].number);
-				playNote();
-				playNote();
-
-				MIDI.programChange(0, MIDI.GM.byName["synth_drum"].number);
-				playNote();
-				playNote();
-			}
-
-			$scope.play = playSound;
-			console.log("finished")
+			$scope.not_initialised = false;
+			console.log("finished");
+			//console.log(MIDI.noteToKey);
+			//console.log(MIDI.keyToNote);
 		}
 		});
 	};
@@ -75,5 +54,70 @@ app.controller('musicController', function($scope) {
 	};
 
 	$scope.refreshSeed();
+	$scope.play = function () {
+
+		MIDI.programChange(0, MIDI.GM.byName["acoustic_grand_piano"].number);
+		var r = CustomRandom($scope.seed);
+		var noteGen = function() { return Math.floor(r.next(50, 60));};
+			
+		for (var i = 0; i < 100; ++i)
+		{
+			var n = noteGen();
+			if (n != 50)
+			{
+				MIDI.noteOn(0, n, 127, $scope.delay_time / 1000.0 * i);				
+				MIDI.noteOn(0, noteGen(), 127, $scope.delay_time / 1000.0 * i);				
+			}
+			else
+				console.log('pause ' + i);
+		}
+		MIDI.programChange(0, MIDI.GM.byName["synth_drum"].number);
+		for (var i = 0; i < 100; ++i)
+		{
+			var n = Math.floor(r.next(0, 2));
+			if (n != 0)
+			{
+				// MIDI.noteOn(0, 50, 127, $scope.delay_time / 1000.0 * i);				
+			}
+			else
+				console.log('pause ' + i);
+		}
+	};
+
+
+	$scope.playMusic = function(){
+		var music = [
+			'A4', 'B4', 'C5 A3', 'C4', 'E4', 'B4', 'C5', '', 'E5', '', 'B4 E3',
+			'G3', 'B3', '', '', '',
+			'E4', '', 'A4 D3', 'F3', 'C4', 'G4', 'A4', '', 'C5', '', 'G4'
+
+		];
+		// var off = ['', 'A4', 'B4', '', '', 'C5', 'B4', '', 'C5', '', 'E5'];
+		var delay = 0;
+			for (var i = 0; i < music.length; ++i)
+			{
+				if (music[i] != '')
+				{
+				var note = music[i].split(' ');
+				for (var p = 0; p < note.length; ++p)
+				{
+					var n = MIDI.keyToNote[note[p]];
+					if (n == null)
+						console.log('error key' + note[p]);
+					MIDI.noteOn(0, n, 127, $scope.delay_time / 1000.0 * i);
+				}
+			}
+		}
+	};
+	$scope.stop = function(){
+		MIDI.stopAllNotes();
+		// MIDI.Player.stop();
+	};
+	$scope.pause = function(){
+		MIDI.Player.pause();
+	};
+	$scope.resume = function(){
+		MIDI.Player.resume();
+	}
 });
 

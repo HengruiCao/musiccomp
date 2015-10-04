@@ -33,6 +33,20 @@
 		</div>
 
 		<div class="form-group">
+			<div class="btn-group" disabled="">
+					<button class="btn btn-default" type="button" ng-click="play()">
+						<i class="glyphicon glyphicon-play"></i>
+					</button>
+					<button class="btn btn-default" type="button" ng-click="pause()">
+						<i class="glyphicon glyphicon-pause"></i>
+					</button>
+					<button class="btn btn-default" type="button" ng-click="stop()">
+						<i class="glyphicon glyphicon-stop"></i>
+					</button>
+			</div>
+		</div>
+
+		<div class="form-group">
 			<div class="input-group">
 				<span class="input-group-btn">
 					<button class="btn btn-default" ng-click="refreshSeed()">
@@ -43,13 +57,27 @@
 				placeholder="Enter Seed"/>
 
 				<span class="input-group-btn">
-					<button class="btn btn-default" ng-click="play()">
+					<button class="btn btn-default"
+					ng-click="play()">
 					Generate
 					<i class="glyphicon glyphicon-music"></i>
 					</button>
 				</span>
-
+				<span class="input-group-btn">
+					<button class="btn btn-default"
+					ng-click="playMusic()">
+					D:
+					<i class="glyphicon glyphicon-music"></i>
+					</button>
+				</span>
 			</div>
 		</div>
 	</div>
+
+	<label >Speed:</label>
+	<div class="input-group">
+		<input class="form-control" type="range" ng-model="delay_time" min="100", max="1000" />
+		<span class="input-group-addon">{{delay_time}} ms</span>
+	</div>
+
 </div>
