@@ -1,4 +1,5 @@
 <div class="container">
+<div class="container">
 
 	<div>
 		<h1 style="text-align:center;">
@@ -72,12 +73,15 @@
 				</span>
 			</div>
 		</div>
-	</div>
-
-	<label >Speed:</label>
-	<div class="input-group">
+	<div class="form-group col-lg-offset-0">
+		<div class="input-group">
+		<span class="input-group-addon"> Speed:</span>
 		<input class="form-control" type="range" ng-model="delay_time" min="100", max="1000" />
 		<span class="input-group-addon">{{delay_time}} ms</span>
+		</div>
 	</div>
-
+	</div>
 </div>
+
+<button class="btn btn-default"
+ng-click="annalyze()"> Annalyze </button>
