@@ -1,6 +1,6 @@
 
-var major_keys = [2, 2, 1, 2, 2, 2, 1];
-var minor_key = 3;
+var major_keys = [2, 2, 1, 2, 2, 2];
+var minor_keys = [2, 1, 2, 2, 1, 3];
 
 var defaultRandom = {
 		next : function (min, max) {max = max || 1; min = min || 0; return Math.random() * (max - min) + min;},
@@ -8,25 +8,49 @@ var defaultRandom = {
 	}; 
 
 var getChords = function(note) {
-	var major_chord = [0, 4, 7];
-	var minor_chord = [0, 3, 7];
-	//not implemented
+	var major_chord = [
+		[0, 4, 7], [5, 9, 12], [7, 11, 14], [2, 5, 9], [4,7,12], [7,12,16], [11, 14, 17]]
+	var minor_chord = [[7, 11, 14], [8, 12, 15], [0, 3, 7], [5, 8, 12],
+	[2, 5, 8], [11, 14, 17], [3, 7, 11]];
+
+	var chord_to = function (c){
+		for (var i = 0; i < c.length; ++i)
+			c[i] += note;
+		return c;
+	}
+	var chords_to = function (cs) {
+		for (var i = 0; i < cs.length; ++i)
+			chord_to(cs[i]);
+		return cs;		
+	}
+
+	return {
+		major_chord : chords_to(major_chord),
+		minor_chord : chords_to(minor_chord)
+	}
 }
+
+
 
 var getKeys = function(note){
 	var keys = {
 		keys: [note],
 		majors : [note],
-		minor : note + minor_key
+		minors [note]
 	};
 	var maj = note;
+	var min = note;
 	for (var i = 0; i < major_keys.length; ++i)
 	{
 		maj += major_keys[i];
+		min += minor_keys[i];
 		keys.majors.push(maj);
-		keys.keys.push(maj);		
+		keys.minors.push(min);
+		keys.keys.push(maj);
+		keys.keys.push(maj);
+		if (maj !== min)
+			keys.keys.push(min);
 	}
-	keys.keys.push(keys.minor);
 
 	//circle of fifth here
 	keys.nextFifth = note + 7;

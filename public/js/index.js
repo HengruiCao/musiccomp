@@ -68,9 +68,9 @@ app_module.controller('main_controller', function($scope) {
     }
 
     function newMusicSong(seed){
+            var r = CustomRandom(seed);
 
-        function newMusicName(){
-                var r = CustomRandom(seed);
+            function newMusicName(){
                 var names = ['risk', 'path', 'music', 'fog', 'sunshine', 'rythm'];
                 var ofs = ['of', 'into', 'to']
                 var names2 = ['heaven', 'life', 'universe', 'magic'];
@@ -89,18 +89,44 @@ app_module.controller('main_controller', function($scope) {
 
             tracks[1] = new MidiTrack({});
             tracks[1].channel = 1;
-            tracks[1].setMidiInstrument('acoustic_grand_piano');
-
+            tracks[1].setMidiInstrument('electric_bass_pick');
             tracks[2] = new MidiTrack({});
             tracks[2].channel = 2;
+            tracks[2].setVolume(0);
             tracks[2].setMidiInstrument('trumpet');
-            $.each(randomSequence(MIDI.keyToNote['C4'], 16, CustomRandom(seed)).notes, function (idx, note){
-                console.log(note);
-                note.pitch = note.noteNumber;
-                note.duration = note.beatLength * 100;
-                tracks[1].addMidiNote(note);
-                tracks[2].addMidiNote(note);
-            });
+
+            var note = MIDI.keyToNote['C4'];
+            for (var i = 0; i < 16; ++i)
+            {
+                var key = getKeys(note);
+                var maj_chord = r.nextElement(getChords(note).major_chord);
+                var duration = 200;
+
+                function addChord(track, chord) {
+                $.each(chord, function (idx, notekey){
+                    track.addEvent(MidiEvent.noteOn({pitch : notekey, volume : 127, channel : track.channel}));
+                });
+                $.each(chord, function (idx, notekey){
+                    track.addEvent(MidiEvent.noteOff({pitch : notekey, volume : 127, channel : track.channel}, ((idx === 0) ? duration : 0)));
+                });                    
+                }
+
+                $.each(maj_chord, function (idx, notekey) {
+                    tracks[1].addEvent(MidiEvent.noteOn({pitch : notekey, volume : 127, channel : 1}, ((idx === 0) ? duration / 4: 0)));
+                    tracks[1].addEvent(MidiEvent.noteOff({pitch : notekey, volume : 127, channel : 1}, duration / 4));                    
+                });
+                console.log(maj_chord);
+                addChord(tracks[2], maj_chord);
+                // note = r.nextElement([key.nextFifth, key.prevFifth, note, note]);
+            }
+
+            // $.each(randomSequence(MIDI.keyToNote['C4'], 16, CustomRandom(seed)).notes, function (idx, note){
+            //     console.log(note);
+            //     note.pitch = note.noteNumber;
+            //     note.duration = note.beatLength * 100;
+            //     tracks[1].addMidiNote(note);
+            //     tracks[2].addMidiNote(note);
+            // });
 
             // $.each(randomSequence(MIDI.keyToNote['C4'], 16, r), function (idx, note){
             //     tracks[2].addMidiNote(note);            
@@ -117,6 +143,15 @@ app_module.controller('main_controller', function($scope) {
         notes = MidiEvent.createNote(note);
         this.addEvent(notes[0]);
         this.addEvent(notes[1]);
+    }
+
+    MidiTrack.prototype.setVolume = function(volume) {
+        this.addEvent(new MidiEvent({
+            type : 0xB, //EVT_CONTROLLER
+            channel : this.channel,
+            param1 : 0x7, //Main volume,
+            param2 : volume
+        }));
     }
 
     MidiTrack.prototype.setMidiInstrument = function (instrument) {
