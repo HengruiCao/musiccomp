@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html >
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
@@ -11,23 +11,46 @@
         <link rel="stylesheet" href="inc/css/party-mode/normalize.css">
         <link rel="stylesheet" href="inc/css/party-mode/ico-style.css">
         <link rel="stylesheet" href="inc/css/party-mode/style.css">
+        <link rel="stylesheet"  type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"></link>
+        <link rel="stylesheet"  type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"></link>
 
-        <script src="inc/js/party-mode/d3.js"></script>
-        <script src="inc/js/party-mode/d3.hexbin.v0.min.js?5c6e4f0"></script>
-        <script src="inc/js/party-mode/jquery.js"></script>
-        <script src="inc/js/party-mode/mousetrap.js"></script>
-        <script src="inc/js/party-mode/id3-minimized.js"></script>
-        <script src="inc/js/party-mode/main.js"></script>
-        
+
+ <!--        <script> $(document).ready(function() { App.init(); }); </script> -->
+    </head>
+
+    <body ng-app="app_module" ng-controller="main_controller">
+
+        <div id="dragover" class="dragover"></div>
+        <div id="tooltip" class="tooltip"></div>
+<!--         <div ng-include="'templates/modal-generation.html'" onload="load()"onload="load()"></div>
+ -->
+ <div class="md-modal md-effect-1" id="modal-generation" >
+<div class="md-content">
+    <div class="form-group">
+        <div>                    
+            <label>Seed</label>
+            <input class="form-control" ng-model="seed">
+        </div>
+        <button class="btn btn-default" ng-click="generate(seed)">Regenerate</button>
+        <button class="btn btn-default" ng-click="exportSong(currentSong)">Download</button>
+    </div>
+</div>
+</div>
+         <div ng-include="'templates/modals.html'" onload="load()"></div>
+        <div ng-include="'templates/menu.html'" onload="load()"></div>
+        <div ng-include="'templates/foot-menu.html'" onload="load()"></div> 
+        <!-- foot menu also includes icons etc -->
+
+
+    <!-- MIDI js javascripts -->
+    <script src="inc/js/jsmidi/midi.js"></script>
     <script src="inc/js/MIDI.js/inc/shim/Base64.js" type="text/javascript"></script>
     <script src="inc/js/MIDI.js/inc/shim/Base64binary.js" type="text/javascript"></script>
     <script src="inc/js/MIDI.js/inc/shim/WebAudioAPI.js" type="text/javascript"></script>
     <!-- midi.js package -->
-
     <script src="inc/js/MIDI.js/inc/jasmid/stream.js"></script>
     <script src="inc/js/MIDI.js/inc/jasmid/midifile.js"></script>
     <script src="inc/js/MIDI.js/inc/jasmid/replayer.js"></script>
-
     <script src="inc/js/MIDI.js/midi/audioDetect.js" type="text/javascript"></script>
     <script src="inc/js/MIDI.js/midi/gm.js" type="text/javascript"></script>
     <script src="inc/js/MIDI.js/midi/loader.js" type="text/javascript"></script>
@@ -39,141 +62,38 @@
     <!-- utils -->
     <script src="inc/js/MIDI.js/util/dom_request_xhr.js" type="text/javascript"></script>
     <script src="inc/js/MIDI.js/util/dom_request_script.js" type="text/javascript"></script>
+    <!-- end MIDI js javascripts -->
 
- <!--        <script> $(document).ready(function() { App.init(); }); </script> -->
-    </head>
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
 
-    <body>
-        <div id="dragover" class="dragover"></div>
-        <div id="tooltip" class="tooltip"></div>
-        <div class="md-modal md-effect-1" id="modal-about">
-            <div class="md-content">
-                <!-- <h3>Credits</h3> -->
-                <div style='line-height: 23px;'>
-<!--                     <i class="icon-headphones"></i>
- -->                    <p>
-
-                    MIDI.js based on soundfonts and Web Audio API is used to schedule MIDI notes. Reference <a target='_blank' href='https://github.com/mudcube/MIDI.js/'>Github</a>
-                    <br />
-                    The rendered audio buffer is then analyzed and rendered by party-mode built with d3. Reference <a target='_blank' href='https://github.com/preziotte/party-mode'>Github</a>
-                    </p>
-                    <button class="md-close">dismiss</button>
-                </div>
-            </div>
-        </div>
-        <div class="md-modal md-effect-1" id="modal-keyboard">
-            <div class="md-content">
-                <!-- <h3>Keyboard Shortcuts</h3> -->
-                <div>
-                    <i class="icon-keyboard"></i>
-                    <ul>
-                        <li>
-                            <a href="#" class="key"><span>1</span></a> through <a href="#" class="key"><span>7</span></a> selects a visualization
-                        </li>                        
-                        <li>
-                            <a href="#" class="key" style='width: 58px;'><span>space</span></a> play / pause</a>
-                        </li>
-                        <li>
-                            <a href="#" class="key"><span>f</span></a>ull screen</a>
-                        </li>
-                        <li>
-                            <a href="#" class="key"><span>m</span></a>enu</a>
-                        </li>
-                        <li>
-                            <a href="#" class="key"><span>c</span></a>hange song</a>
-                        </li>
-                        <li>
-                            <a href="#" class="key"><span>l</span></a>oop</a> random colors and visualizers
-                        </li>
-                        <li>
-                            <a href="#" class="key"><span>&#9650;</span></a><a href="#" class="key"><span>&#9660;</span></a> cycles vizualization</a>
-                        </li>
-                        <li>
-                            <a href="#" class="key"><span>&#9664;</span></a><a href="#" class="key"><span>&#9654;</span></a> cycles color palettes</a>
-                        </li>
-
-                    </ul>
-                    <button class="md-close">dismiss</button>
-                </div>
-            </div>
-        </div>
-        <div class='menu menu-open'>
-            <ul>
-                <li id='circle' viz-num='0' class='active'><div class='clicker'></div></li>
-                <li id='chop' viz-num='1'><div class='clicker'></div></li>
-                <li id='icosahedron' viz-num='2'><div class='clicker'></div></li>
-                <li id='grid' viz-num='3'><div class='clicker'></div></li>
-                <li id='equal' viz-num='4'><div class='clicker'></div></li>
-                <li id='spin' viz-num='5'><div class='clicker'></div></li>
-                <li id='hexbin' viz-num='6'><div class='clicker'></div></li>
-<!--            <li id='voronoi' viz-num='7'></li> -->
-<!--                 <li class='buffer'>RETURN TO<br />preziotte.com</li>
- -->
-            </ul>
-        </div>
-
-        <div class='wrapper'>
-           <div class='vinyl-container'><i class="icon-vinyl"></i></div>
-
-            <div id="mp3_player" class='fade'>
-                <div id="audio_box"></div> <i id='fullscreen' class="icon-resize-full-alt"></i>
-            </div>
-
-            <div id='progressBar' class='progressBar'></div>
-            <div class='song-metadata'></div>
-            <div class='menu-controls'>
-                <i class="i icon-backward2"></i> 
-                <i class="i icon-pause"></i> 
-                <i class="i icon-forward2"></i> 
-                <i class="i icon-soundcloud schover" data-hovertext='Play music from a SoundCloud URL.'></i> 
-                <i class="i icon-microphone" data-hovertext='Connect to the microphone on your computer.'></i> 
-            </div>
-
-            <div class='menu-wide'>
-
-                <div class='options'>
-                    <i class="i icon-menu"></i>
-                    <i class="i icon-question"></i> 
-                    <i class="i icon-keyboard2"></i> 
-                    <i class="i icon-loop-on"><span>randomize visualization: <b>off</b></span></i> 
-<!--                     <i class="i icon-volume-medium"></i> -->
-                    <i class="i icon-github2"></i> 
-                    <i class="i icon-expand"></i> 
-                </div>
-
-                <div class="slider"><span>adjust sensitivity</span>
-                    <input min="1" max="100" value="20" id='slider' type="range">
-                </div>
-
-                <div class="dotstyle dotstyle-scaleup">
-                    <ul>
-                        <li class="current"><a class='zero' href="#">0</a></li>
-                        <li><a class='one' href="#">1</a></li>
-                        <li><a class='two' href="#">2</a></li>
-                        <li><a class='three' href="#">3</a></li>
-                        <li><a class='four' href="#">4</a></li>
-                        <li><a class='five' href="#">5</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    <!-- party-mode javascripts -->
+        <script src="inc/js/party-mode/d3.js"></script>
+        <script src="inc/js/party-mode/d3.hexbin.v0.min.js?5c6e4f0"></script>
+        <script src="inc/js/party-mode/mousetrap.js"></script>
+        <script src="inc/js/party-mode/id3-minimized.js"></script>
+        <script src="inc/js/party-mode/main.js"></script>
+    <!-- end party-mode javascripts -->
+    
 
     <script type="text/javascript">
-
-        MIDI.loadPlugin({
-            soundfontUrl: "res/FluidR3_GM/",
-            instruments : ['synth_drum'],
-            onsuccess : function(){
-                console.log('finish');
-                // MIDI.Player.loadFile(
-                //     "song/AceAttroney/Pursuit - Cornered.mid", MIDI.Player.start);
-//                MIDI.Player.loadFile(
-  //                 "song/DeathNote/Death Note - L's Theme.mid", MIDI.Player.start);
-                MIDI.Player.loadFile(
-                     "song/Portal - Still Alive.mid", MIDI.Player.start);
-            }
-        });
+        function download(filename, encodedStream) {
+          var element = document.createElement('a');
+          element.setAttribute('href', encodedStream);
+          element.setAttribute('download', filename);
+          element.style.display = 'none';
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+        }
     </script>
 
+    <script type="text/javascript">
+    var app_module = angular.module('app_module', []);
+    //to help things organized
+    </script>
+    <script src="js/custom-random.js" type="text/javascript"></script>
+    <script src="js/music-basic.js" type="text/javascript"></script>
+    <script src="js/index.js" type="text/javascript"></script>
     </body>
 </html>

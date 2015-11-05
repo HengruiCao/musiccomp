@@ -96,12 +96,12 @@
 			if (window.analyser != null)
 			{
 	 			source.connect(window.analyser);
-	 			window.analyser.connect(ctx.destination);
 			}
- 			//source.connect(ctx.destination);
+			else
+ 				source.connect(ctx.destination);
 			source.playbackRate.value = 1; // pitch shift 
 			source.gainNode = ctx.createGain(); // gain
-			source.gainNode.connect(ctx.destination);
+			source.gainNode.connect(window.analyser || ctx.destination);
 			source.gainNode.gain.value = Math.min(1.0, Math.max(-1.0, gain));
 			source.connect(source.gainNode);
 			///

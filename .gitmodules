@@ -2,5 +2,5 @@
 	path = public/res
 	url = https://github.com/gleitz/midi-js-soundfonts.git
 [submodule "jsmidi"]
-	path = jsmidi
+	path = public/inc/js/jsmidi
 	url = https://github.com/sergi/jsmidi.git

@@ -7,7 +7,10 @@
 	var WAVE_DATA = []; 													// normalized waveform data used in visualizations
 	// main app/init stuff //////////////////////////////////////////////////////////////////////////
 	var a = {};	
-	var audio = a.audio = {};
+	var audio = a.audio = {
+		pause : function(){},
+		play : function(){}, paused : false
+	};
 	a.init = function() {
 		console.log("a.init fired");
 
@@ -63,6 +66,7 @@
 		a.bind();			// attach all the handlers
 		a.keyboard();		// bind all the shortcuts
 		root.analyser = context.createAnalyser();
+		root.analyser.connect(root.context.destination);
 		a.frameLooper();
 		//a.frameLooper();
 		// if (window.location.protocol.search('chrome-extension') >= 0) {
@@ -162,10 +166,11 @@
 		Mousetrap.bind('left', function() { h.themeChange(State.theme-1); });
 		Mousetrap.bind('right', function() { h.themeChange(State.theme+1); });
 
+		Mousetrap.bind('r', function() {h.showModal('#modal-generation');});
 		};
 
 	a.loadSound = function() {
-		console.log("a.loadSound fired");
+		//console.log("a.loadSound fired");
 
 		if (navigator.userAgent.search("Safari") >= 0 && navigator.userAgent.search("Chrome") < 0) {
 			console.log(" -- sound loaded via ajax request");
@@ -181,7 +186,7 @@
 
 		};
 	a.loadSoundAJAX = function() {
-		console.log('a.loadSoundAJAX fired');
+		//console.log('a.loadSoundAJAX fired');
 
 		audio = null;
 	    var request = new XMLHttpRequest();
@@ -198,7 +203,7 @@
 
 		};
 	a.loadSoundHTML5 = function(f) {
-		console.log('a.loadSoundHTML5 fired');
+		//console.log('a.loadSoundHTML5 fired');
 
 		audio = new Audio();
 		//audio.remove();
@@ -215,7 +220,7 @@
 		};
 
 	a.soundCloud = function() {
-		console.log('a.soundCloud fired');		
+		//console.log('a.soundCloud fired');		
 
 		// if mozilla or safar, just loadsound instead
 		if (navigator.userAgent.search("Safari") >= 0 && navigator.userAgent.search("Chrome") < 0) {
@@ -362,7 +367,7 @@
 		};
 	a.audioBullshit = function (data) {
 		// uses web audio api to expose waveform data
-		console.log("a.audioBullshit fired");
+		//console.log("a.audioBullshit fired");
 
 		root.analyser = root.analyser || context.createAnalyser();
         //analyser.smoothingTimeConstant = .4; // .8 default
@@ -388,7 +393,7 @@
 		};
 	a.findAudio = function() {
 		// unused.
-		console.log("a.findAudio fired");
+		//console.log("a.findAudio fired");
 
 		$('video, audio').each(function() {
 			//h.loadSoundHTML5(this.src);
@@ -1335,7 +1340,7 @@
 	root.Render = r;
 
 	// helper methods ///////////////////////////////////////////////////////////////////////////////
-	var h = {};
+	var h = a.helper = {};
 	h.toggleMenu = function(x) {
 		console.log('h.toggleMenu');
 
@@ -1555,8 +1560,8 @@
 		};
 
 	h.togglePlay = function() {
-		(audio && audio.paused == false) ? audio.pause() : audio.play();
 		$('.icon-pause').toggleClass('icon-play');
+		//(audio && audio.paused == false) ? audio.pause() : audio.play();
 		};
 	h.songEnded = function() {
 		console.log('h.songEnded fired');		
@@ -1824,5 +1829,5 @@
 
 }).call(this);
 
-$(document).ready(App.init);
+// $(document).ready(App.init);
 

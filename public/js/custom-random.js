@@ -29,6 +29,14 @@ var CustomRandom = function(nseed) {
                 
         return (min != undefined && max != undefined) ? min+seed%maximum/maximum*(max-min) : seed%maximum/maximum;  
       // if 'min' and 'max' are not provided, return random number between 0 & 1  
-      }    
+      },
+      nextInt : function (min, max)
+      {
+        return Math.floor(this.next(min, max));
+      }, 
+      nextElement : function(ary)
+      {
+        return ary[this.nextInt(0, ary.length)];
+      }   
     }    
 }

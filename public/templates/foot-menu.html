@@ -1,0 +1,45 @@
+        <div class='wrapper'>
+           <div class='vinyl-container'><i class="icon-vinyl"></i></div>
+
+            <div id="mp3_player" class='fade'>
+                <div id="audio_box"></div> <i id='fullscreen' class="icon-resize-full-alt"></i>
+            </div>
+
+            <div id='progressBar' class='progressBar'></div>
+            <div class='song-metadata' ></div>
+            <div class='menu-controls'>
+                <i class="i icon-backward2"></i> 
+                <i class="i icon-pause"></i> 
+                <i class="i icon-forward2" ng-click="regenerate()"></i> 
+                <i class="i icon-soundcloud schover" data-hovertext='Play music from a SoundCloud URL.'></i> 
+                <i class="i icon-microphone" data-hovertext='Connect to the microphone on your computer.'></i> 
+            </div>
+
+            <div class='menu-wide'>
+
+                <div class='options'>
+                    <i class="i icon-menu"></i>
+                    <i class="i icon-question"></i> 
+                    <i class="i icon-keyboard2"></i> 
+                    <i class="i icon-loop-on"><span>randomize visualization: <b>off</b></span></i> 
+<!--                     <i class="i icon-volume-medium"></i> -->
+                    <i class="i icon-github2"></i> 
+                    <i class="i icon-expand"></i> 
+                </div>
+
+                <div class="slider"><span>adjust sensitivity</span>
+                    <input min="1" max="100" value="20" id='slider' type="range">
+                </div>
+
+                <div class="dotstyle dotstyle-scaleup">
+                    <ul>
+                        <li class="current"><a class='zero' href="#">0</a></li>
+                        <li><a class='one' href="#">1</a></li>
+                        <li><a class='two' href="#">2</a></li>
+                        <li><a class='three' href="#">3</a></li>
+                        <li><a class='four' href="#">4</a></li>
+                        <li><a class='five' href="#">5</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
