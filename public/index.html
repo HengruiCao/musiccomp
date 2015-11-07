@@ -22,21 +22,8 @@
 
         <div id="dragover" class="dragover"></div>
         <div id="tooltip" class="tooltip"></div>
-<!--         <div ng-include="'templates/modal-generation.html'" onload="load()"onload="load()"></div>
- -->
- <div class="md-modal md-effect-1" id="modal-generation" >
-<div class="md-content">
-    <div class="form-group">
-        <div>                    
-            <label>Seed</label>
-            <input class="form-control" ng-model="seed">
-        </div>
-        <button class="btn btn-default" ng-click="generate(seed)">Regenerate</button>
-        <button class="btn btn-default" ng-click="exportSong(currentSong)">Download</button>
-    </div>
-</div>
-</div>
-         <div ng-include="'templates/modals.html'" onload="load()"></div>
+        <div ng-include="'templates/modal-generation.html'" onload="load()"onload="load()"></div>
+        <div ng-include="'templates/modals.html'" onload="load()"></div>
         <div ng-include="'templates/menu.html'" onload="load()"></div>
         <div ng-include="'templates/foot-menu.html'" onload="load()"></div> 
         <!-- foot menu also includes icons etc -->
@@ -94,6 +81,16 @@
     </script>
     <script src="js/custom-random.js" type="text/javascript"></script>
     <script src="js/music-basic.js" type="text/javascript"></script>
+
+    <!-- begin KMUSIC scripts -->
+    <script src="js/KMUSIC/key.js" type="text/javascript"></script>
+    <script src="js/KMUSIC/range.js" type="text/javascript"></script>
+    <script src="js/KMUSIC/miditrack.js" type="text/javascript"></script>
+    <script src="js/KMUSIC/buffer.js" type="text/javascript"></script>
+    <script src="js/KMUSIC/generation.js" type="text/javascript"></script>
+    <!-- end KMUSIC scripts -->
+
     <script src="js/index.js" type="text/javascript"></script>
+
     </body>
 </html>

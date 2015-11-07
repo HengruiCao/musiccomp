@@ -90,10 +90,10 @@
 		$('.buffer').on(click, function() { window.location.href='http://preziotte.com' });
 		$('.song-metadata').on(click, h.songGo);
 		$('.wrapper').on(click, function() { h.toggleMenu('close'); });
-		$('.icon-pause').on(click, h.togglePlay);
-		$('.icon-play').on(click, h.togglePlay);
-		$('.icon-forward2').on(click, function() { h.changeSong('n'); });
-		$('.icon-backward2').on(click, function() { h.changeSong('p'); });
+		// $('.icon-pause').on(click, h.togglePlay);
+		// $('.icon-play').on(click, h.togglePlay);
+		// $('.icon-forward2').on(click, function() { h.changeSong('n'); });
+		// $('.icon-backward2').on(click, function() { h.changeSong('p'); });
 		$('.icon-expand').on(click, h.toggleFullScreen);
 		$('.icon-soundcloud').on(click, function() { h.showModal('#modal-soundcloud'); });
 		$('.icon-microphone').on(click, a.microphone);

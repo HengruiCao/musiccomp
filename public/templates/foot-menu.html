@@ -8,8 +8,8 @@
             <div id='progressBar' class='progressBar'></div>
             <div class='song-metadata' ></div>
             <div class='menu-controls'>
-                <i class="i icon-backward2"></i> 
-                <i class="i icon-pause"></i> 
+                <i class="i icon-backward2" ng-click="changeSong('p')"></i> 
+                <i class="i icon-pause" ng-click="togglePlay()"></i> 
                 <i class="i icon-forward2" ng-click="regenerate()"></i> 
                 <i class="i icon-soundcloud schover" data-hovertext='Play music from a SoundCloud URL.'></i> 
                 <i class="i icon-microphone" data-hovertext='Connect to the microphone on your computer.'></i> 

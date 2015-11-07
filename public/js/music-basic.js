@@ -36,7 +36,7 @@ var getKeys = function(note){
 	var keys = {
 		keys: [note],
 		majors : [note],
-		minors [note]
+		minors : [note]
 	};
 	var maj = note;
 	var min = note;
