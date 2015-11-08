@@ -35,14 +35,8 @@
             for (var i = 0; i < length; i++) {
               mainMelody[mainMelody.length] = note + (i % 2) ? - i / 2 + 1 : i / 2 + 1;
             }
-        }
+        };
 
-        function createMelody() {
-            var mainMelody = [];
-
-
-        }
-        
         function newMusicData(){
             var tracks = [];
 
@@ -55,7 +49,6 @@
             tracks[1].setMidiInstrument('electric_bass_pick');
             tracks[2] = new MidiTrack({});
             tracks[2].channel = 2;
-            tracks[2].setVolume(0);
             tracks[2].setMidiInstrument('trumpet');
 
             var note = MIDI.keyToNote['C4'];
@@ -93,6 +86,7 @@
 	var normBeatLength = function(timestamp, mult) {
 		mult = mult || 4;
 		timestamp = Math.round(timestamp * mult) / mult;
+                timestamp = timestamp * (60000 / (128 * 20));
 		return timestamp;
 	}
 
@@ -133,6 +127,21 @@
 	    		_.handlers.push(hs[n]);
     		}
     	}
+    }
+
+    var pushMelody = function(info) {
+
+        var buffer = info.getBuffer();
+        for (var i = 0; i < info.melody.length; i++) {
+          var noteToPress = info.melody[i];
+          console.log(info.tempo);
+
+          var beatDuration = Math.floor(60000 / ( 128 * info.tempo));
+	  buffer.pushNotes([noteToPress],info.duration[i] * beatDuration);    	
+        }
+	//buffer.pushNotes([0], info.duration[i] * beatDuration * 50);    	
+
+
     }
 
     var pushChords = Info.pushChords = function(info) {
@@ -186,10 +195,82 @@
     }
   	//////////////////////////////////////////////////////////
 
+    Generation.prototype.createMelodyStars = function(len, mainMelody, note) {
+      var length = this.rand.nextInt(3, 7);
+      var startDirect = this.rand.nextInt(0, 1);
+      startDirect = (startDirect) ? -1 : 1;
+      
+      for (var i = 0; i < length; i++) {
+        var direct = (i % 2) ? startDirect : -startDirect;
+        var nb = 1 + i / 2;
+        mainMelody[len + i + 1] = note + direct * nb;
+        this.duration[len + i + 1] = 1;
+      }
+      return length - 1;
+    }
+
+    Generation.prototype.createMelody = function() {
+
+            var mainMelody = [];
+            this.duration = [];
+
+            var note = this.rand.nextInt(MIDI.keyToNote['C3'], MIDI.keyToNote['C5']);
+            mainMelody[0] = note;
+            var noteRange = 12;
+            var original = note;
+            var length = this.rand.nextInt(13, 20);
+            this.tempo = this.rand.nextInt(40, 70);
+
+            for (var i = 0; i < length; i++) {
+              var choice = this.rand.nextInt(1, 7);
+              var evolution = this.rand.nextInt(0, 1);
+              var tmp = 0;
+              this.duration[i] = this.rand.nextInt(1,4);
+              evolution = (evolution) ? -1 : 1;
+              switch (choice) {
+                case 2:
+                  tmp = 1 * evolution;
+                  break;
+                case 3:
+                  tmp = 2 * evolution;
+                  break;
+                case 4:
+                  tmp = 5;
+                  break;
+                case 5:
+                  tmp = 7;
+                  break;
+                case 6:
+                  tmp = original;
+                  i += this.createMelodyStars(i, mainMelody, mainMelody[i]);
+                  break;
+                case 7:
+                  tmp = 12;
+                  break;
+              }
+              if (choice != 6  && choice > 3 && evolution)
+                tmp = -tmp;
+              if (choice != 6)
+                tmp += mainMelody[i];
+              if (tmp != 6 && tmp > original + noteRange)
+                tmp = original;
+              mainMelody[i + 1] = Math.round(tmp);
+            }
+
+            return mainMelody;
+
+
+    };
+        
     Generation.prototype.initialiseTracks = function (){
     	var tracks = this.tracks = [];
     	var ntracks = 3; //can have random here;
-        this.tempo = this.rand.nextInt(40, 170);
+        this.tempo = this.rand.nextInt(60, 150);
+        console.log(this.tempo);
+        this.melody = this.createMelody();
+        console.log("MELODY")
+        console.log(this.melody);
+        console.log(this.duration);
 
     	var instruments = ['trumpet', 'acoustic_grand_piano', 'cello', 'violin', 'flute', 'guitar_harmonics', 'tuba'];
 
@@ -209,7 +290,13 @@
     	}
 
     	//set handlers
-    	tracks[0].info.addHandlers([pushChords]);
+        tracks[2].info.melody = this.melody;
+        tracks[2].info.tempo = this.tempo;
+        tracks[2].info.duration = this.duration;
+        tracks[2].setMidiInstrument('violin');
+
+        tracks[2].info.addHandlers([pushMelody]);
+    	//tracks[0].info.addHandlers([pushChords]);
     	//tracks[1].info.addHandlers([seqChords, splitNotes]);
     	// tracks[2].info.addHandlers([seqChords, splitNotes]);
     }
@@ -228,7 +315,7 @@
 
     Generation.prototype.generateChords = function(nchords) {
     	//no change gamme
-    	//use major_chords
+    	//use major_chordsi
     	var pchords = this.gamme.major_chords;
     	var chords = [];
     	for (var n = 0; n < nchords; ++n)
@@ -254,8 +341,7 @@
 
     			var buffer = track.info.createBuffer();
 
-                        var beatDuration = 30 ;
-
+                        var beatDuration = Math.floor(60000 / (16 * this.tempo));
 
     			buffer.addToTrack(track, beatDuration);
     		}

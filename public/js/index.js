@@ -24,8 +24,8 @@ app_module.controller('main_controller', function($scope) {
     $scope.exportSong = function(songObj){
         var name = songObj.name;
 
-        if (name.indexOf('.midi') === -1)
-          name += '.midi';
+        if (name.indexOf('.mid') === -1)
+          name += '.mid';
         download(name, songObj.data);   
     }
 
