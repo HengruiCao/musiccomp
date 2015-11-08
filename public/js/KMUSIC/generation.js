@@ -130,7 +130,7 @@
     		var possible = range.getNotes(chord[n]);
     		chordToPress.push(info.getRand().nextElement(possible));
     	}
-		buffer.pushNotes(chordToPress, 4);    	
+		buffer.pushNotes(chordToPress, 4);
     }
     var seqChords = Info.seqChords = function(info) {
     	var chord = info.getChord();
@@ -181,6 +181,7 @@
     		var track = new MidiTrack({});
 
     		track.channel = n;
+    		track.setTempo(120);
     		track.setMidiInstrument(this.rand.nextElement(instruments));
 
     		//starting range set of a track
@@ -195,7 +196,6 @@
     	//set handlers
     	tracks[0].info.addHandlers([pushChords])
     	tracks[1].info.addHandlers([seqChords, splitNotes]);
-    	// tracks[2].info.addHandlers([seqChords, splitNotes]);
     }
 
     Generation.prototype.tracksToData = function() {
@@ -238,7 +238,7 @@
 
     			var buffer = track.info.createBuffer();
 
-    			buffer.addToTrack(track, 50);
+    			buffer.addToTrack(track, 128);
     		}
     	}
     }
