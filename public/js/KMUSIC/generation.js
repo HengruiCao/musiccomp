@@ -14,19 +14,34 @@
 	////////////////////////////////////////// Music Name
 
 	var newMusicName = KMUSIC.newMusicName = function (r){
-            var names = ['risk', 'path', 'music', 'fog', 'sunshine', 'rythm'];
-            var ofs = ['of', 'into', 'to']
-            var names2 = ['heaven', 'life', 'universe', 'magic'];
+            var names = ['risk', 'path', 'music', 'fog', 'sunshine', 'rythm', 'tale', 'chuck norris'];
+            var ofs = ['of', 'into', 'to', 'from']
+            var names2 = ['fire', 'the elements', '', 'heaven', 'life', 'universe', 'magic', 'logs'];
 
             var name = r.nextElement(names) + ' ' + r.nextElement(ofs)
                 + ' ' + r.nextElement(names2);
-            return r.getSeed() + '-' + name + '.midi';
+            return r.getSeed() + '-' + name + '.mid';
     }
 
 	//////////////////////////////////////////
 
 	var newMusicSong = KMUSIC.newMusicSong = function (seed){
         var r = new KMUSIC.Random(seed);
+
+        function escalatorPattern(mainMelody) {
+            var note = mainMelody[mainMelody.length - 1];
+            var length = 5 + Math.random() % 20;
+
+            for (var i = 0; i < length; i++) {
+              mainMelody[mainMelody.length] = note + (i % 2) ? - i / 2 + 1 : i / 2 + 1;
+            }
+        }
+
+        function createMelody() {
+            var mainMelody = [];
+
+
+        }
         
         function newMusicData(){
             var tracks = [];
@@ -174,8 +189,9 @@
     Generation.prototype.initialiseTracks = function (){
     	var tracks = this.tracks = [];
     	var ntracks = 3; //can have random here;
+        this.tempo = this.rand.nextInt(40, 170);
 
-    	var instruments = ['trumpet', 'acoustic_grand_piano', 'flute', 'guitar_harmonics', 'tuba'];
+    	var instruments = ['trumpet', 'acoustic_grand_piano', 'cello', 'violin', 'flute', 'guitar_harmonics', 'tuba'];
 
     	for (var n = 0; n < ntracks; ++n) {
     		var track = new MidiTrack({});
@@ -193,8 +209,8 @@
     	}
 
     	//set handlers
-    	tracks[0].info.addHandlers([pushChords])
-    	tracks[1].info.addHandlers([seqChords, splitNotes]);
+    	tracks[0].info.addHandlers([pushChords]);
+    	//tracks[1].info.addHandlers([seqChords, splitNotes]);
     	// tracks[2].info.addHandlers([seqChords, splitNotes]);
     }
 
@@ -238,7 +254,10 @@
 
     			var buffer = track.info.createBuffer();
 
-    			buffer.addToTrack(track, 50);
+                        var beatDuration = 30 ;
+
+
+    			buffer.addToTrack(track, beatDuration);
     		}
     	}
     }
