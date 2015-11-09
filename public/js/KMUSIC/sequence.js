@@ -41,7 +41,7 @@
 		var frequence = params.frequence || 5;
 		var sequenceStack = [];
 		return function (info, sequence) {
-			if (counter == 0) {				
+			if (counter == 0 && sequenceStack.length == 0) {				
 				sequenceStack.push(sequence);
 			}
 			++counter;	
@@ -61,6 +61,7 @@
 				else 
 				{
 					this.sequence = info.getRand().nextElement(sequenceStack);
+					sequenceStack.push(this.sequence);
 				}
 				counter = 0;
 			} 
