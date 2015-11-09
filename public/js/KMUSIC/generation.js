@@ -15,7 +15,7 @@
 	var newMusicName = KMUSIC.newMusicName = function (r){
             var names = ['risk', 'path', 'music', 'fog', 'sunshine', 'rythm', 'tale', 'chuck norris'];
             var ofs = ['of', 'into', 'to', 'from']
-            var names2 = ['fire', 'the elements', '', 'heaven', 'life', 'universe', 'magic', 'logs'];
+            var names2 = ['fire', 'the elements', 'stuff', 'heaven', 'life', 'universe', 'magic', 'logs'];
 
             var name = r.nextElement(names) + ' ' + r.nextElement(ofs)
                 + ' ' + r.nextElement(names2);
@@ -120,12 +120,13 @@
 
     Generation.prototype.initialiseTracks = function (){
     	var tracks = this.tracks = [];
-    	var ntracks = 1; //6; //can have random here;
+    	var ntracks = 3; //can have random here;
         this.tempo = this.rand.nextInt(60, 150);
         console.log('tempo' + this.tempo);
         //this.createDuration();
 
-    	var instruments = ['trumpet', 'acoustic_grand_piano', 'cello', 'violin', 'flute', 'guitar_harmonics', 'tuba'];
+    	var instruments = ['trumpet', 'acoustic_grand_piano', 'flute', 'guitar_harmonics', 'tuba'];
+        var sequenceNumbers = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 8, 9]
 
     	for (var n = 0; n < ntracks; ++n) {
     		var track = new MidiTrack({});
@@ -136,7 +137,7 @@
     		track.setVolume(127);
     		//starting range set of a track
     		// var range = new Range({lowerBound: 24 + 24 *(n + 1)});
-    		var range = new KMUSIC.Range({lowerBound: 24 + 24 *(n + 1), upperBound: 24 * 2 + 24 *(n + 1)}); //24 diff, give more choices
+    		var range = new KMUSIC.Range({lowerBound: 24 + 24 * 1, upperBound: 24 * 2 + 24 *1}); //24 diff, give more choices
     		//
 
     		track.info = new KMUSIC.Info({generation: this, range: range});    		
@@ -146,9 +147,9 @@
     		track.info.sequenceGenerators = [
 	    		KMUSIC.Sequence.generator1({
 	    			generators: [KMUSIC.Measure.generator1()],
-	    			variations: [KMUSIC.Measure.melodyContinuation()],
+	    			variations: [KMUSIC.Measure.variation1(), KMUSIC.Measure.varyNote()],
 	    			measureLength : this.rand.nextInt(1, 4), //can be rand
-	    			sequenceLength : this.rand.nextInt(4, 10)})
+	    			sequenceLength : this.rand.nextElement(sequenceNumbers)})
     			];
     		track.info.sequenceVariations = [
     			KMUSIC.Sequence.changeSequence({
@@ -160,11 +161,25 @@
     	// tracks[0].info.addHandlers([pushChords])
     	// tracks[1].info.addHandlers([seqChords, splitNotes]);
 
+    		tracks[0].setMidiInstrument('bright_acoustic_piano');
+    		tracks[0].info.sequenceGenerators = [
+	    		KMUSIC.Sequence.generator1({
+	    			generators: [KMUSIC.Measure.generator1()],
+	    			variations: [KMUSIC.Measure.melodyContinuation()],
+	    			measureLength : this.rand.nextInt(1, 4), //can be rand
+	    			sequenceLength : this.rand.nextElement(sequenceNumbers)})
+    			];
+    		tracks[0].info.sequenceVariations = [
+    			KMUSIC.Sequence.changeSequence({
+    				frequence : this.rand.nextInt(2, 5)
+    			})
+    		];
+/*
         tracks[0].setMidiInstrument('bright_acoustic_piano');
         tracks[0].info.duration = this.duration;
         tracks[0].info.melody = this.melody;
         tracks[0].info.addHandlers([pushDuration]);
-
+*/
     	//tracks[0].info.addHandlers([pushChords]);
     	//tracks[1].info.addHandlers([seqChords, splitNotes]);
     	// tracks[2].info.addHandlers([seqChords, splitNotes]);
