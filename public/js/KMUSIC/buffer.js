@@ -66,15 +66,15 @@
 		}
 	}
 
-	Buffer.prototype.toOnOffs = function (){
+	Buffer.prototype.toOnOffs = function (beatLength){
 		this.clean();
 		var OnOffs = [];
 		for (var n = 0; n < this.buffer.length; ++n)
 		{
 			var note = this.buffer[n];
 			if (note.noteNumber > 0) {
-				OnOffs.push({type : 'on', timestamp : note.timestamp, noteNumber : note.noteNumber});
-				OnOffs.push({type : 'off', timestamp : note.timestamp + note.duration - 1, noteNumber : note.noteNumber});
+				OnOffs.push({type : 'on', timestamp : (note.timestamp) * beatLength, noteNumber : note.noteNumber});
+				OnOffs.push({type : 'off', timestamp : (note.timestamp + note.duration) * beatLength- 1, noteNumber : note.noteNumber});
 			}
 		}
 		OnOffs.sort(function(a, b) {
@@ -88,12 +88,12 @@
 	//helper method to convert to jsmidi MidiEvents
 	Buffer.prototype.addToTrack = function(track, beatLength){
  		beatLength = beatLength || 500; //default 0.5 second by beat	
- 		var events = this.toOnOffs();
+ 		var events = this.toOnOffs(beatLength);
  		var timestamp = 0;
  		for (var n = 0; n < events.length; ++n)
  		{
  			var e = events[n];
- 			var delay = (e.timestamp - timestamp) * beatLength;
+ 			var delay = (e.timestamp - timestamp);
  			track.addEvent(
  				(e.type === 'on' ?
  				new MidiEvent({time: delay, type: 0x9, // EVT_NOTE_ON,

@@ -100,10 +100,11 @@
             console.log(i);
             console.log(info.duration[i]);
             for (var j = 0; j < info.duration[i].length; ++j) {
-	      buffer.pushNotes([67 + j], info.duration[i][j]);
+	      buffer.pushNotes([67], info.duration[i][j]);
             }
         }
-
+        console.log(info.duration);
+        console.log(buffer);
     }
 
     var pushMelody = function(info) {
@@ -125,7 +126,7 @@
     }
 
     Generation.prototype.createDuration = function() {
-      var melodyLength = this.rand.nextInt(1, 4);
+      var melodyLength = 1;
       var duration = [];
       
       for (var mesure = 0; mesure < melodyLength; mesure++) {
@@ -224,9 +225,9 @@
     	// tracks[0].info.addHandlers([pushChords])
     	// tracks[1].info.addHandlers([seqChords, splitNotes]);
 
-        tracks[2].setMidiInstrument('bright_acoustic_piano');
-        tracks[2].info.duration = this.duration;
-        tracks[2].info.addHandlers([pushDuration]);
+        tracks[0].setMidiInstrument('bright_acoustic_piano');
+        tracks[0].info.duration = this.duration;
+        tracks[0].info.addHandlers([pushDuration]);
 
     	//tracks[0].info.addHandlers([pushChords]);
     	//tracks[1].info.addHandlers([seqChords, splitNotes]);
@@ -278,7 +279,10 @@
     			var buffer = track.info.createBuffer();
 
     			buffer.addToTrack(track, 128);
+		    	console.log(this.tracks);
+		    	break;
     		}
+    		break ;
     	}
     }
 
