@@ -57,14 +57,14 @@
         var nbmelodies = 1; // this.rand.nextInt(1, 3);
 
         var sequenceNumbers = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 8, 9]
-    	var instruments = ['bright_acoustic_piano', 'acoustic_grand_piano', 'timpani', 'viola', 'acoustic_guitar_steel'];
+    	var instruments = ['bright_acoustic_piano', 'acoustic_grand_piano', 'flute', 'music_box', 'timpani', 'viola', 'acoustic_guitar_steel', 'harmonica', 'accordion', 'baritone_sax'];
         for (var i = 0; i < nbmelodies; ++i) {
           var track = new MidiTrack({});
 
           track.channel = i;
           track.setTempo(this.tempo);
           track.setMidiInstrument(this.rand.nextElement(instruments));
-    	  track.setVolume(10);
+    	  track.setVolume(100);
     	  var range = new KMUSIC.Range({lowerBound: 36, upperBound: 48}); //24 diff, give more choices
     	  range.move(i % 2 === 0 ? 12 : 0); //move upper
 
@@ -92,10 +92,10 @@
     }
     
     Generation.prototype.generateAccompagnement = function (){
-        var nbaccompagnment = this.rand.nextInt(1, 4);
+        var nbaccompagnment = this.rand.nextElement([1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 4]);
 
         var sequenceNumbers = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4]
-    	var instruments = ['electric_guitar_muted', 'taiko_drum','pizzicato_strings', 'overdriven_guitar', 'xylophone'];
+    	var instruments = ['electric_guitar_muted', 'pizzicato_strings', 'french_horn', 'overdriven_guitar', 'slap_bass', 'tuba', 'xylophone'];
         for (var i = 0; i < nbaccompagnment; ++i) {
           var test = new MidiTrack({});
 
@@ -112,7 +112,7 @@
 	    		generators: [KMUSIC.Measure.generator2()],
 	    		variations: [KMUSIC.Measure.melodyContinuation()],
 	    		measureLength : 4,  //this.rand.nextInt(1, 4), //can be rand
-                        coreNote : this.rand.nextInt(30, 50),
+                        coreNote : this.rand.nextInt(30, 72),
                         durationFlag : 0,
 	    		sequenceLength : this.rand.nextElement(sequenceNumbers)})
     		];
@@ -133,7 +133,6 @@
 
     Generation.prototype.initialiseTracks = function (){
     	var tracks = this.tracks = [];
-    	var ntracks = 1 //6; //can have random here;
         this.tempo = this.rand.nextElement([60, 70, 80, 90, 100, 120, 150, 180])
         //this.createDuration();
 

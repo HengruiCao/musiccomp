@@ -46,7 +46,7 @@
 
 	Measure.generator2 = function (params) { // Accompagnement
 		params = params || {};
-		var durationList = params.durationList || [0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 2, 4];
+		var durationList = params.durationList || [0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 2, 4, 4, 4, 4];
                 var coreNote = params.coreNote || 36
 		return function (info) {
 		    var gamme = info.getGamme();
