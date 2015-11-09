@@ -412,7 +412,7 @@ MetaEvent.prototype = {
         //     byteArray.push(1);
         //     byteArray.push(this.data);
         // }
-        console.log(byteArray);
+        //console.log(byteArray);
         return byteArray;
     }
 };

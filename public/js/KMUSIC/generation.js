@@ -100,11 +100,10 @@
             console.log(i);
             console.log(info.duration[i]);
             for (var j = 0; j < info.duration[i].length; ++j) {
-	      buffer.pushNotes([67], info.duration[i][j]);
+	      buffer.pushNotes([info.melody[i][j]], info.duration[i][j]);
+	      //buffer.pushNotes(64, info.duration[i][j]);
             }
         }
-        console.log(info.duration);
-        console.log(buffer);
     }
 
     var pushMelody = function(info) {
@@ -126,11 +125,15 @@
     }
 
     Generation.prototype.createDuration = function() {
-      var melodyLength = 1;
+      var melodyLength = this.rand.nextElement([1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, , 5, 6, 7, 8]);
       var duration = [];
-      
+      var melody = [];
+      var startNote = this.rand.nextInt(MIDI.keyToNote['C3'], MIDI.keyToNote['C6']);
+      var tmpNote = startNote;
+  
       for (var mesure = 0; mesure < melodyLength; mesure++) {
         var durationMesure = [];
+        var melodyMesure = [];
         var timeLeft = 4.0;
         
         while (timeLeft != 0) {
@@ -141,61 +144,24 @@
           }
           durationMesure[durationMesure.length] = dice;
           timeLeft -= dice;
+
+          var dice = this.rand.nextInt(-1, 1);
+
+          melodyMesure[melodyMesure.length] = dice + tmpNote;
+          tmpNote += dice;
+          if (tmpNote > startNote + 12 || tmpNote < startNote - 12)
+            tmpNote = startNote;
+
         }
         duration[duration.length] = durationMesure;
+        melody[melody.length] = melodyMesure;
       }
       this.duration = duration;
+      this.melody = melody;
     }
 
     Generation.prototype.createMelody = function() {
 
-            var mainMelody = [];
-            this.duration = [];
-
-            var note = this.rand.nextInt(MIDI.keyToNote['C3'], MIDI.keyToNote['C5']);
-            mainMelody[0] = note;
-            var noteRange = 12;
-            var original = note;
-            var length = this.rand.nextInt(13, 20);
-            this.tempo = this.rand.nextInt(40, 70);
-
-            for (var i = 0; i < length; i++) {
-              var choice = this.rand.nextInt(1, 7);
-              var evolution = this.rand.nextInt(0, 1);
-              var tmp = 0;
-              this.duration[i] = this.rand.nextInt(1,4);
-              evolution = (evolution) ? -1 : 1;
-              switch (choice) {
-                case 2:
-                  tmp = 1 * evolution;
-                  break;
-                case 3:
-                  tmp = 2 * evolution;
-                  break;
-                case 4:
-                  tmp = 5;
-                  break;
-                case 5:
-                  tmp = 7;
-                  break;
-                case 6:
-                  tmp = original;
-                  i += this.createMelodyStars(i, mainMelody, mainMelody[i]);
-                  break;
-                case 7:
-                  tmp = 12;
-                  break;
-              }
-              if (choice != 6  && choice > 3 && evolution)
-                tmp = -tmp;
-              if (choice != 6)
-                tmp += mainMelody[i];
-              if (tmp != 6 && tmp > original + noteRange)
-                tmp = original;
-              mainMelody[i + 1] = Math.round(tmp);
-            }
-
-            return mainMelody;
     };
         
     Generation.prototype.initialiseTracks = function (){
@@ -227,6 +193,7 @@
 
         tracks[0].setMidiInstrument('bright_acoustic_piano');
         tracks[0].info.duration = this.duration;
+        tracks[0].info.melody = this.melody;
         tracks[0].info.addHandlers([pushDuration]);
 
     	//tracks[0].info.addHandlers([pushChords]);
@@ -246,7 +213,7 @@
     	this.rand = new KMUSIC.Random(this.seed);
     	this.initialiseTracks();
     	this.generateMeasure();
-    	console.log(this.tracks);
+    	//console.log(this.tracks);
     	return {name : this.name, data: 'data:audio/midi;base64,' + this.tracksToData()};
     }
 
