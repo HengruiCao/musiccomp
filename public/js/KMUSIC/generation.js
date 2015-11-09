@@ -57,7 +57,7 @@
         var nbmelodies = 1; // this.rand.nextInt(1, 3);
 
         var sequenceNumbers = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 8, 9]
-    	var instruments = ['bright_acoustic_piano', 'acoustic_grand_piano', 'banjo', 'viola', 'acoustic_guitar_steel'];
+    	var instruments = ['bright_acoustic_piano', 'acoustic_grand_piano', 'timpani', 'viola', 'acoustic_guitar_steel'];
         for (var i = 0; i < nbmelodies; ++i) {
           var track = new MidiTrack({});
 
@@ -92,7 +92,7 @@
     }
     
     Generation.prototype.generateAccompagnement = function (){
-        var nbaccompagnment = this.rand.nextInt(1, 3);
+        var nbaccompagnment = this.rand.nextInt(1, 4);
 
         var sequenceNumbers = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4]
     	var instruments = ['electric_guitar_muted', 'taiko_drum','pizzicato_strings', 'overdriven_guitar', 'xylophone'];
