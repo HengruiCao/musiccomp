@@ -49,7 +49,6 @@
 		};
 	}
 
-
 	Measure.variation1 = function (params) {
 		params = params || {};
 		var variations = params.variations || [2, -2];;
@@ -61,6 +60,38 @@
 			for (var n = 0; n < events.length; ++n) {
 				events[n].noteNumber += diff;
 			}
+			return new_measure;
+		} 
+	}
+
+	Measure.melodyContinuation = function (params) { // Generate next notes, to be called only once
+		params = params || {};
+		var variations = params.variations || [2, -2];;
+		var durationList = params.durationList || [0.5, 0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 0.25, 4];
+		var mutateDuration = function (time, rand) {
+			var dur = rand.nextElement(durationList);
+
+			while (dur > time) {
+		  		dur = dur / 2.0;
+			}
+			return dur;
+		}
+                var nextNote = function(octave, lastNote, gamme) {
+                        return lastNote;
+                }
+		return function (info, measure) {
+			var new_measure = new Measure();
+
+			var timeLeft = 4.0;
+			var lastNote = measure.events()[measure.events().length - 1].noteNumber; // Recup last note
+			while (timeLeft > 0) {
+			    var duration = mutateDuration(timeLeft, rand);
+                            var lastNote = nextNote(octave, lastNote, gamme);
+                            new_mesure.buffer.pushNotes([lastNote], duration);
+                        }
+                        var duration = mutateDuration(timeLeft, rand);
+                        // Creer next note
+
 			return new_measure;
 		} 
 	}

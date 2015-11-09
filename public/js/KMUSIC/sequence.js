@@ -9,9 +9,9 @@
 		measureGenerators = params.generators;
 		measureVariations = params.variations;
 
-		var measureLength = params.measureLength || 1;
+		var measureLength = params.measureLength || 1; // How many measures
 
-		var sequenceLength = params.sequenceLength || 2;
+		var sequenceLength = params.sequenceLength || 2; // How many measures
 		return function (info) {
 			var _ = info.sequence = info.sequence || new Sequence();
 			var measure = info.measure = new KMUSIC.Measure();
