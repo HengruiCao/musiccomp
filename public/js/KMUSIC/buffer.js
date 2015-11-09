@@ -72,8 +72,10 @@
 		for (var n = 0; n < this.buffer.length; ++n)
 		{
 			var note = this.buffer[n];
-			OnOffs.push({type : 'on', timestamp : note.timestamp, noteNumber : note.noteNumber});
-			OnOffs.push({type : 'off', timestamp : note.timestamp + note.duration, noteNumber : note.noteNumber});
+			if (note.noteNumber > 0) {
+				OnOffs.push({type : 'on', timestamp : note.timestamp, noteNumber : note.noteNumber});
+				OnOffs.push({type : 'off', timestamp : note.timestamp + note.duration - 1, noteNumber : note.noteNumber});
+			}
 		}
 		OnOffs.sort(function(a, b) {
 			return a.timestamp > b.timestamp ? 1 : 

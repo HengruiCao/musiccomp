@@ -195,8 +195,6 @@
             }
 
             return mainMelody;
-
-
     };
         
     Generation.prototype.initialiseTracks = function (){
