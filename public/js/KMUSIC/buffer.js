@@ -1,9 +1,14 @@
 (function(KMUSIC, $, undefined) {
 
 	//////////////////////////////////////////	Buffer
-	var Buffer = KMUSIC.Buffer = function (){
+	var Buffer = KMUSIC.Buffer = function (buffer){
 		this.buffer = [];
 		this.timestamp = 0;
+		if (buffer && buffer.buffer)
+		{
+			Array.prototype.push.apply(this.buffer, buffer.buffer);
+		}
+
 	};
 
 	Buffer.prototype.clean = function (){
@@ -87,7 +92,7 @@
 
 	//helper method to convert to jsmidi MidiEvents
 	Buffer.prototype.addToTrack = function(track, beatLength){
- 		beatLength = beatLength || 500; //default 0.5 second by beat	
+ 		beatLength = beatLength || 128; //default 128 tick by beat	
  		var events = this.toOnOffs(beatLength);
  		var timestamp = 0;
  		for (var n = 0; n < events.length; ++n)

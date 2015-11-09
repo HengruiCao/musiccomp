@@ -16,6 +16,8 @@
     	_.getBuffer = function () {return _.buffer;}
     	_.getGlobals = function () {return params.generation;}
     	_.getRand = function () {return params.generation.rand;}
+        _.getGamme = function () {return params.generation.gamme;}
+
 
     	_.createBuffer = function (buffer) { //if buffer passed as param, then use existing buffer
     		_.buffer = buffer || new KMUSIC.Buffer();

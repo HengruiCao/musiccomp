@@ -22,68 +22,12 @@
             return r.getSeed() + '-' + name + '.mid';
     }
 
-	//////////////////////////////////////////
-
-	var newMusicSong = KMUSIC.newMusicSong = function (seed){
-        var r = new KMUSIC.Random(seed);
-
-        function escalatorPattern(mainMelody) {
-            var note = mainMelody[mainMelody.length - 1];
-            var length = 5 + Math.random() % 20;
-
-            for (var i = 0; i < length; i++) {
-              mainMelody[mainMelody.length] = note + (i % 2) ? - i / 2 + 1 : i / 2 + 1;
-            }
-        };
-
-        function newMusicData(){
-            var tracks = [];
-
-            tracks[0] = new MidiTrack({});//just gonna put the tempo here
-            // tracks[0].setTempo(120);
-            // tracks[0].setTrackName('Meta track');
-
-            tracks[1] = new MidiTrack({});
-            tracks[1].channel = 1;
-            tracks[1].setMidiInstrument('electric_bass_pick');
-            tracks[2] = new MidiTrack({});
-            tracks[2].channel = 2;
-            tracks[2].setMidiInstrument('trumpet');
-
-            var note = MIDI.keyToNote['C4'];
-            for (var i = 0; i < 16; ++i)
-            {
-                var key = getKeys(note);
-                var maj_chord = r.nextElement(getChords(note).major_chord);
-                var duration = 200;
-
-                function addChord(track, chord) {
-                $.each(chord, function (idx, notekey){
-                    track.addEvent(MidiEvent.noteOn({pitch : notekey, volume : 127, channel : track.channel}));
-                });
-                $.each(chord, function (idx, notekey){
-                    track.addEvent(MidiEvent.noteOff({pitch : notekey, volume : 127, channel : track.channel}, ((idx === 0) ? duration : 0)));
-                });                    
-                }
-
-                $.each(maj_chord, function (idx, notekey) {
-                    tracks[1].addEvent(MidiEvent.noteOn({pitch : notekey, volume : 127, channel : 1}, ((idx === 0) ? duration / 4: 0)));
-                    tracks[1].addEvent(MidiEvent.noteOff({pitch : notekey, volume : 127, channel : 1}, duration / 4));                    
-                });
-                console.log(maj_chord);
-                addChord(tracks[2], maj_chord);
-                // note = r.nextElement([key.nextFifth, key.prevFifth, note, note]);
-            }
-            return MidiWriter({tracks : tracks}).b64;
-        }        
-        return {name: KMUSIC.newMusicName(r), data: 'data:audio/midi;base64,' + newMusicData()};
-    }
     //////////////////////////////////////////
 	var normBeatLength = KMUSIC.normBeatLength = function(timestamp, mult) {
-              mult = mult || 4;
-              timestamp = Math.round(timestamp * mult) / mult;
-                timestamp = timestamp * (60000 / (128 * 20));
-              return timestamp;
+		//deprecated
+        mult = mult || 4;
+        timestamp = Math.round(timestamp * mult) / mult;
+        return timestamp;
     }
 
     var Generation = KMUSIC.Generation = function(params) {
@@ -110,22 +54,8 @@
 	//buffer.pushNotes([0], info.duration[i] * beatDuration * 50);
     }
     
-    Generation.prototype.createMelodyStars = function(len, mainMelody, note) {
-      var length = this.rand.nextInt(3, 7);
-      var startDirect = this.rand.nextInt(0, 1);
-      startDirect = (startDirect) ? -1 : 1;
-      
-      for (var i = 0; i < length; i++) {
-        var direct = (i % 2) ? startDirect : -startDirect;
-        var nb = 1 + i / 2;
-        mainMelody[len + i + 1] = note + direct * nb;
-        this.duration[len + i + 1] = 1;
-      }
-      return length - 1;
-    }
-
     Generation.prototype.createDuration = function() {
-      var melodyLength = this.rand.nextElement([1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, , 5, 6, 7, 8]);
+      var melodyLength = this.rand.nextElement([1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 6, 7, 8]);
       var duration = [];
       var melody = [];
       var startNote = this.rand.nextInt(MIDI.keyToNote['C3'], MIDI.keyToNote['C6']);
@@ -164,11 +94,34 @@
 
     };
         
+
+    KMUSIC.Info.prototype.addSequence = function (track, totalMeasureLength) {
+    	for (var n = 0; n < this.sequenceGenerators.length; ++n) {
+    		(this.sequenceGenerators[n])(this);
+    	}
+    	var sequence = this.sequence;
+    	var len = sequence.measures.length;
+    	console.log(len);
+    	for (var i = 0; i < totalMeasureLength; i += len) {
+
+    		for (var a = 0; a < len; ++a) {
+    			sequence.measures[a].buffer.addToTrack(track);
+    		}
+
+    		//variate sequence
+	    	for (var n = 0; n < this.sequenceVariations.length; ++n) {
+	    		this.sequenceVariations[n](this, sequence);
+    		}
+    		sequence = this.sequence;
+    	}
+    }    
+
     Generation.prototype.initialiseTracks = function (){
     	var tracks = this.tracks = [];
-    	var ntracks = 3; //can have random here;
+    	var ntracks = 6; //can have random here;
         this.tempo = this.rand.nextInt(60, 150);
-        this.createDuration();
+        console.log('tempo' + this.tempo);
+        //this.createDuration();
 
     	var instruments = ['trumpet', 'acoustic_grand_piano', 'cello', 'violin', 'flute', 'guitar_harmonics', 'tuba'];
 
@@ -176,7 +129,7 @@
     		var track = new MidiTrack({});
 
     		track.channel = n;
-    		track.setTempo(150);
+    		track.setTempo(this.tempo);
     		track.setMidiInstrument(this.rand.nextElement(instruments));
     		track.setVolume(127);
     		//starting range set of a track
@@ -186,6 +139,20 @@
 
     		track.info = new KMUSIC.Info({generation: this, range: range});    		
     		this.tracks.push(track);
+
+
+    		track.info.sequenceGenerators = [
+	    		KMUSIC.Sequence.generator1({
+	    			generators: [KMUSIC.Measure.generator1()],
+	    			variations: [KMUSIC.Measure.variation1(), KMUSIC.Measure.varyNote()],
+	    			measureLength : this.rand.nextInt(1, 4), //can be rand
+	    			sequenceLength : this.rand.nextInt(4, 10)})
+    			];
+    		track.info.sequenceVariations = [
+    			KMUSIC.Sequence.changeSequence({
+    				frequence : this.rand.nextInt(2, 5)
+    			})
+    		];
     	}
     	//set handlers
     	// tracks[0].info.addHandlers([pushChords])
@@ -217,40 +184,13 @@
     	return {name : this.name, data: 'data:audio/midi;base64,' + this.tracksToData()};
     }
 
-    Generation.prototype.generateChords = function(nchords) {
-    	//no change gamme
-    	//use major_chordsi
-    	var pchords = this.gamme.major_chords;
-    	var chords = [];
-    	for (var n = 0; n < nchords; ++n)
-    	{
-    		chords.push(this.rand.nextElement(pchords));
-    	}
-    	return chords;
-    }
-
     Generation.prototype.generateMeasure = function(){
-    	var chords = this.generateChords(16); //need another upper layer
+    	for (var t = 0; t < this.tracks.length; ++t) {
+    		var track = this.tracks[t];
+    		var info = track.info;
 
-    	for (var n = 0; n < chords.length; ++n) {
-    		var chord = chords[n];
-
-    		for (var t = 0; t < this.tracks.length; ++t) {
-    			var track = this.tracks[t];
-
-    			//randomly change range
-    			track.info.range.move(this.rand.nextInt(-5, 5));
-
-    			track.info.chord = chord;
-
-    			var buffer = track.info.createBuffer();
-
-    			buffer.addToTrack(track, 128);
-		    	console.log(this.tracks);
-		    	break;
-    		}
-    		break ;
-    	}
+    		info.addSequence(track, 40);
+	    }
     }
 
     //////////////////////////////////////////
