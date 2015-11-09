@@ -11,7 +11,15 @@
 
 		this.getRange = function () {return (this.upperBound - this.lowerBound);}
 
-		this.move = function (dist) {this.lowerBound += dist; this.upperBound += dist;} //move range
+		this.move = function (dist) {
+			this.lowerBound += dist;
+			this.upperBound += dist;} //move range
+
+		this.center = function (n) {
+			var dist = Math.floor((this.lowerBound + this.upperBound) / 2 - n);
+			this.lowerBound += dist;
+			this.upperBound += dist;
+		}
 	}
 
 	Range.prototype.getNotes = function(keynote) { //get possible midinotes within range
