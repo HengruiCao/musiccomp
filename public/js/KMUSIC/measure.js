@@ -8,7 +8,7 @@
 
 	Measure.generator1 = function (params) {
 		params = params || {};
-		var durationList = params.durationList || [0.5, 0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 0.25, 4];
+		var durationList = params.durationList || [0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 2, 4];
 		var balance = params.balance || 0.5;
 		var mutateDuration = function (time, rand) {
 			var dur = rand.nextElement(durationList);
@@ -36,6 +36,7 @@
 					//change note
 					note = rand.nextElement(gamme.keysUsed);
 				}
+					duration = mutateDuration(timeLeft, rand);
 
    			   	_.buffer.pushNotes(range.getNotes(note), duration);
 			   	timeLeft -= duration;
@@ -43,10 +44,28 @@
 		  }
 	}
 
-	Measure.generator2 = function (params) {
+	Measure.generator2 = function (params) { // Accompagnement
+		params = params || {};
+		var durationList = params.durationList || [0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 2, 4];
+                var coreNote = params.coreNote || 36
 		return function (info) {
-			
-		};
+		    var gamme = info.getGamme();
+		    var _ = info.measure || new Measure();
+                    var rand = info.getRand();
+                    var mainNote = gamme.keysUsed[rand.nextInt(0, 6)].noteNumber +  (coreNote - coreNote % 12) 
+
+                    var durationKind = [rand.nextElement(durationList), rand.nextElement(durationList)];
+                    var timeLeft = 4.0;
+                    while (timeLeft != 0) {
+                      var dur = durationKind[rand.nextInt(0, 1)];
+
+                      if (dur > timeLeft)
+                        dur = timeLeft;
+
+   		      _.buffer.pushNotes([mainNote], dur);
+                      timeLeft -= dur;
+                    }
+		}
 	}
 
 	Measure.move = function (params) {
@@ -64,11 +83,25 @@
 		} 
 	}
 
+        Measure.accompagnyContinuation = function (params) {
+		params = params || {};
+                return function (info, measure) {
+                }
+                
+        }
+
 	Measure.melodyContinuation = function (params) { // Generate next notes, to be called only once
 		params = params || {};
 		var variations = params.variations || [2, -2];;
-		var durationList = params.durationList || [0.5, 0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 0.25, 4];
+		var durationList = params.durationList || [0.5, 0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 4];
+		var durationFlag = params.durationFlag || 0; // 0 Nothing special, 1 - Slow, 2- Fast
+                if (durationFlag == 1)
+		    var durationList = params.durationList || [1, 1, 1, 1, 2, 2, 4];
+                else if (durationFlag == 2)
+		    var durationList = params.durationList || [0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 1, 1, 1, 1, 2, 0.25];
+
                 var directionList = [-1, -1, -1, -1, -1, 0, 1, 1, 1, 1, 1]
+                var coreNote = params.coreNote || 60
 		var mutateDuration = function (time, rand) {
 			var dur = rand.nextElement(durationList);
 
@@ -122,6 +155,8 @@
 			    var duration = mutateDuration(timeLeft, rand);
                 var lastNote = nextNote(Math.floor((lastNote - lastNote % 12) / 12), lastNote, info.getGamme());
                 new_measure.buffer.pushNotes([lastNote], duration);
+                if (lastNote > 18 + coreNote || lastNote < coreNote - 18)
+                  lastNote = coreNote;
                 timeLeft -= duration;
             }
 			return new_measure;
