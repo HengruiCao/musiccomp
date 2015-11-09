@@ -94,15 +94,19 @@
     	this.gamme = params.gamme || new KMUSIC.Gamme(KMUSIC.Key.midiToKey(60)); //60 being C4
     }
 
-    var pushMelody = function(info) {
-
+    var pushDuration = function(info) {
         var buffer = info.getBuffer();
-        for (var i = 0; i < info.melody.length; i++) {
-          var noteToPress = info.melody[i];
-          console.log(info.tempo);
-
-	  	  buffer.pushNotes([noteToPress], info.duration[i]);    	
+        for (var i = 0; i < info.duration.length; ++i) {
+            console.log(i);
+            console.log(info.duration[i]);
+            for (var j = 0; j < info.duration[i].length; ++j) {
+	      buffer.pushNotes([67 + j], info.duration[i][j]);
+            }
         }
+
+    }
+
+    var pushMelody = function(info) {
 	//buffer.pushNotes([0], info.duration[i] * beatDuration * 50);
     }
     
@@ -118,6 +122,28 @@
         this.duration[len + i + 1] = 1;
       }
       return length - 1;
+    }
+
+    Generation.prototype.createDuration = function() {
+      var melodyLength = this.rand.nextInt(1, 4);
+      var duration = [];
+      
+      for (var mesure = 0; mesure < melodyLength; mesure++) {
+        var durationMesure = [];
+        var timeLeft = 4.0;
+        
+        while (timeLeft != 0) {
+          var dice = this.rand.nextElement([0.5, 0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 0.25, 4]);
+
+          while (dice > timeLeft) {
+            dice = dice / 2.0;
+          }
+          durationMesure[durationMesure.length] = dice;
+          timeLeft -= dice;
+        }
+        duration[duration.length] = durationMesure;
+      }
+      this.duration = duration;
     }
 
     Generation.prototype.createMelody = function() {
@@ -177,11 +203,7 @@
     	var tracks = this.tracks = [];
     	var ntracks = 3; //can have random here;
         this.tempo = this.rand.nextInt(60, 150);
-        console.log(this.tempo);
-        this.melody = this.createMelody();
-        console.log("MELODY")
-        console.log(this.melody);
-        console.log(this.duration);
+        this.createDuration();
 
     	var instruments = ['trumpet', 'acoustic_grand_piano', 'cello', 'violin', 'flute', 'guitar_harmonics', 'tuba'];
 
@@ -204,19 +226,17 @@
     	// tracks[0].info.addHandlers([pushChords])
     	// tracks[1].info.addHandlers([seqChords, splitNotes]);
 
-        tracks[2].info.melody = this.melody;
-        tracks[2].info.tempo = this.tempo;
+        tracks[2].setMidiInstrument('bright_acoustic_piano');
         tracks[2].info.duration = this.duration;
-        tracks[2].setMidiInstrument('violin');
+        tracks[2].info.addHandlers([pushDuration]);
 
-        tracks[2].info.addHandlers([pushMelody]);
     	//tracks[0].info.addHandlers([pushChords]);
     	//tracks[1].info.addHandlers([seqChords, splitNotes]);
     	// tracks[2].info.addHandlers([seqChords, splitNotes]);
 
     	//handlers
-    	tracks[0].info.addHandlers([KMUSIC.Info.pushChords, KMUSIC.Info.rangeMover()]);
-    	tracks[1].info.addHandlers([KMUSIC.Info.seqChords, KMUSIC.Info.splitNotes, KMUSIC.Info.rangeCenter()]);
+    	//tracks[0].info.addHandlers([KMUSIC.Info.pushChords, KMUSIC.Info.rangeMover()]);
+    	//tracks[1].info.addHandlers([KMUSIC.Info.seqChords, KMUSIC.Info.splitNotes, KMUSIC.Info.rangeCenter()]);
     }
 
     Generation.prototype.tracksToData = function() {
