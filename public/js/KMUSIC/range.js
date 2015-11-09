@@ -5,6 +5,8 @@
 
 	var interval = (KMUSIC.Key && KMUSIC.Key.nKeys) || 12;//default 12
 
+	//Range could be used to represent octave (or more)
+	//use to convert key to midinotes value 
 	var Range = KMUSIC.Range = function(params){
 		this.lowerBound = params.lowerBound || 60; // default C4 60
 		this.upperBound = params.upperBound || (this.lowerBound + interval); //default one complete range

@@ -3,9 +3,26 @@
 		var _ = this;
 
 		_.measures = [];
+
+		_.addToTrack = function (track){
+			var timestamp = 0;
+			var buffer = new KMUSIC.Buffer();
+			for (var n = 0; n < _.measures.length; ++n) {
+				var events = _.measures[n].events();
+				for (var e = 0; e < events.length; ++e) {
+					buffer.pushNotes([events[e].noteNumber],
+						events[e].duration, events[e].timestamp + timestamp);
+				}
+				timestamp += 4;
+			}
+			buffer.addToTrack(track);
+		}
 	}
 
 	Sequence.generator1 = function (params) {
+		//takes a list of measure generators
+		//and repeat the same measure and vary it throughout sequence length
+
 		measureGenerators = params.generators;
 		measureVariations = params.variations;
 
@@ -30,12 +47,15 @@
 	}
 
 	Sequence.novariation = function (params) {
+		//as simple as the name implies, this does no changement
 		return function (info, sequence) {
 			return sequence;
 		}
 	}
 
 	Sequence.changeSequence = function (params) {
+		//this mutation replace current sequence by a stacked sequence
+		//Or generate a new one and use it
 		params = params || {};
 		var counter = 0;
 		var frequence = params.frequence || 5;
@@ -50,22 +70,60 @@
 				//change to another sequence
 				if (info.getRand().next(0, sequenceStack.length) < 2)
 				{
-					this.sequence = new Sequence();
+					info.sequence = new Sequence();
 					for (var n = 0; n < info.sequenceGenerators.length; ++n) {
-	    				(info.sequenceGenerators[n])(info);
-			    	} //regenerate a sequence
-			  		// var new_sequence = this.sequence;
-
-					// this.sequence = sequence;
+	    				info.sequence = (info.sequenceGenerators[n])(info);
+			    	}
 				}
 				else 
 				{
-					this.sequence = info.getRand().nextElement(sequenceStack);
-					sequenceStack.push(this.sequence);
+					info.sequence = info.getRand().nextElement(sequenceStack);
+					sequenceStack.push(info.sequence);
 				}
 				counter = 0;
 			} 
-			return this.sequence;
+			return info.sequence;
+		}
+	}
+
+	Sequence.move = function (params) {
+		//this function move up or down existing sequence by rand octave within limit
+
+		params = params || {};
+		var counter = 0;
+		var frequence = params.frequence || 3;
+		var limit = params.limit || 2;
+		var moved = 0;
+		return function (info, sequence) {
+			if (counter >= params.frequence) {
+				
+				var nsequence = new Sequence(); //to be safe, make a copy of sequenceStack			
+				var interval = limit - moved;
+				var diff = info.getRand().nextInt(-interval - moved, interval - moved);
+
+				for (var n = 0; n < nsequence.measures.length; ++n) {
+					var measure = new Measure(nsequence.measures[n]);
+
+					var events = measure.events();
+					for (var i = 0; i < events.length; ++i) {
+						events[i].noteNumber += diff * 12;
+					}
+				}
+			}
+			++counter;	
+			return info.sequence;
+		}
+	}
+
+	Sequence.changeMeasure = function(params) {
+		//This function use given measure generator and regenerate a measure
+		return function (info, sequence) {
+			var nsequence = new Sequence();
+
+			for (var n = 0; n < nsequence.measures.length; ++n) {
+
+			}
+			return nsequence;
 		}
 	}
 

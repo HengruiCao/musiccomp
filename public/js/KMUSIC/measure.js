@@ -34,7 +34,7 @@
 					duration = mutateDuration(timeLeft, rand);
 				} else {
 					//change note
-					note = rand.nextElement(gamme.major_keys);
+					note = rand.nextElement(gamme.keysUsed);
 				}
 
    			   	_.buffer.pushNotes(range.getNotes(note), duration);
@@ -49,7 +49,7 @@
 		};
 	}
 
-	Measure.variation1 = function (params) {
+	Measure.move = function (params) {
 		params = params || {};
 		var variations = params.variations || [2, -2];;
 		return function (info, measure) {
@@ -79,58 +79,58 @@
 		}
 		return function (info, measure) {
 			var new_measure = new Measure();
-                        var rand = info.getRand();
-                        var nextNote = function(octave, lastNote, gamme) {
+            var rand = info.getRand();
+            var nextNote = function(octave, lastNote, gamme) {
 
-                          var direction = rand.nextElement(directionList);
-                          var choice = rand.nextInt(1, 6);
-                          var index = gamme.keysUsed.indexOf(KMUSIC.Key.midiToKey(lastNote));
+              var direction = rand.nextElement(directionList);
+              var choice = rand.nextInt(1, 6);
+              var index = gamme.keysUsed.indexOf(KMUSIC.Key.midiToKey(lastNote));
 
-                          switch (choice) {
-                            case 1: // Rest on the same note
-                              break;
-                            case 2: // Can get out of gamme
-                              lastNote += direction;
-                              break;
-                            case 3: /// 1 note
-                              (index == -1) ? lastNote += 2 * direction : index += direction;
-                              break;
-                            case 4: /// 2 notes
-                              (index == -1) ? lastNote += 5 * direction : index += direction * 2;
-                              break;
-                            case 5: /// 4 notes
-                              (index == -1) ? lastNote += 7 * direction : index += direction * 2;
-                              break;
-                            case 6: /// octave
-                              lastNote += direction * 12;
-                              break;
-                          }
+              switch (choice) {
+                case 1: // Rest on the same note
+                  break;
+                case 2: // Can get out of gamme
+                  lastNote += direction;
+                  break;
+                case 3: /// 1 note
+                  (index == -1) ? lastNote += 2 * direction : index += direction;
+                  break;
+                case 4: /// 2 notes
+                  (index == -1) ? lastNote += 5 * direction : index += direction * 2;
+                  break;
+                case 5: /// 4 notes
+                  (index == -1) ? lastNote += 7 * direction : index += direction * 4;
+                  break;
+                case 6: /// octave
+                  lastNote += direction * 12;
+                  break;
+              }
 
-                          if (index != -1 && choice >= 3 && choice <= 5) {
-                              if (index < 0)
-                                octave -= 1;
-                              else if (index >= 7)
-                                octave += 1;
-                              lastNote = gamme.keysUsed[(index + 7) % 7].noteNumber + 12 * octave
-                          }
+              if (index != -1 && choice >= 3 && choice <= 5) {
+                  if (index < 0)
+                    octave -= 1;
+                  else if (index >= 7)
+                    octave += 1;
+                  lastNote = gamme.keysUsed[(index + 7) % 7].noteNumber + 12 * octave
+              }
 
-                          return lastNote;
-                        }
-
+              return lastNote;
+            }
 			var timeLeft = 4.0;
 			var lastNote = measure.events()[measure.events().length - 1].noteNumber; // Recup last note
 			while (timeLeft > 0) {
 			    var duration = mutateDuration(timeLeft, rand);
-                            var lastNote = nextNote(Math.floor((lastNote - lastNote % 12) / 12), lastNote, info.getGamme());
-                            new_measure.buffer.pushNotes([lastNote], duration);
-                            timeLeft -= duration;
-                        }
-
+                var lastNote = nextNote(Math.floor((lastNote - lastNote % 12) / 12), lastNote, info.getGamme());
+                new_measure.buffer.pushNotes([lastNote], duration);
+                timeLeft -= duration;
+            }
 			return new_measure;
 		} 
 	}
 
-	Measure.varyNote = function(params) {
+	Measure.varyNotes = function(params) {
+		//this variation vary the noteValue of a given index
+
 		params = params || {};
 		var indexArray = params.indexArray || [-1];
 		return function (info, measure) {
@@ -148,7 +148,7 @@
 
 				var note = notes[index];
 
-				note = rand.nextElement(gamme.major_keys);				
+				note = rand.nextElement(gamme.keysUsed);				
 			}
 			return new_measure;			
 		}

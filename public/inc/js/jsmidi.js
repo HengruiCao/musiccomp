@@ -167,7 +167,6 @@ var translateTobyte = function (ticks) {
 }
 
 var translateTempo = function(tempo) {
-    console.log('tempo' + 60000000 / tempo);
     return translateTobyte(Math.floor(60000000 / tempo));
 }
 
