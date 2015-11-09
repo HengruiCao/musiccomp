@@ -73,7 +73,7 @@
 		{
 			var note = this.buffer[n];
 			if (note.noteNumber > 0) {
-				OnOffs.push({type : 'on', timestamp : (note.timestamp) * beatLength, noteNumber : note.noteNumber});
+				OnOffs.push({type : 'on', timestamp : (note.timestamp) * beatLength + 1, noteNumber : note.noteNumber});
 				OnOffs.push({type : 'off', timestamp : (note.timestamp + note.duration) * beatLength- 1, noteNumber : note.noteNumber});
 			}
 		}
