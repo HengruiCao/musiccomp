@@ -36,6 +36,8 @@
     	this.name = params.name || KMUSIC.newMusicName(this.rand); //put a random name;
 
     	this.gamme = params.gamme || new KMUSIC.Gamme(KMUSIC.Key.midiToKey(60)); //60 being C4
+        this.gamme.isMajor = this.rand.nextInt(0, 1);
+        this.gamme.keysUsed = (this.gamme.isMajor) ? this.gamme.major_keys : this.gamme.minor_keys;
     }
 
     var pushDuration = function(info) {
@@ -118,7 +120,7 @@
 
     Generation.prototype.initialiseTracks = function (){
     	var tracks = this.tracks = [];
-    	var ntracks = 6; //can have random here;
+    	var ntracks = 1; //6; //can have random here;
         this.tempo = this.rand.nextInt(60, 150);
         console.log('tempo' + this.tempo);
         //this.createDuration();
@@ -144,7 +146,7 @@
     		track.info.sequenceGenerators = [
 	    		KMUSIC.Sequence.generator1({
 	    			generators: [KMUSIC.Measure.generator1()],
-	    			variations: [KMUSIC.Measure.variation1(), KMUSIC.Measure.varyNote()],
+	    			variations: [KMUSIC.Measure.melodyContinuation()],
 	    			measureLength : this.rand.nextInt(1, 4), //can be rand
 	    			sequenceLength : this.rand.nextInt(4, 10)})
     			];

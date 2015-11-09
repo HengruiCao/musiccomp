@@ -21,8 +21,8 @@
 
 			for (var n = 0; n < sequenceLength; ++n) {
 				_.measures.push(measure);
-				for (var v = 0; v < measureVariations; ++v) {
-					measureVariations[v](info, measure);
+				for (var v = 0; v < measureVariations.length; ++v) {
+					measure = measureVariations[v](info, measure);
 				}
 			}
 			return _;

@@ -3,7 +3,7 @@
 		var _ = this;
 
 		_.buffer = new KMUSIC.Buffer(measure && measure.buffer);
-		var events = function () {return _.buffer.buffer;}; //an alias to get buffer of notes
+		this.events = function () {return _.buffer.buffer;}; //an alias to get buffer of notes
 	}
 
 	Measure.generator1 = function (params) {
@@ -68,6 +68,7 @@
 		params = params || {};
 		var variations = params.variations || [2, -2];;
 		var durationList = params.durationList || [0.5, 0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 0.25, 4];
+                var directionList = [-1, -1, -1, -1, -1, 0, 1, 1, 1, 1, 1]
 		var mutateDuration = function (time, rand) {
 			var dur = rand.nextElement(durationList);
 
@@ -76,21 +77,54 @@
 			}
 			return dur;
 		}
-                var nextNote = function(octave, lastNote, gamme) {
-                        return lastNote;
-                }
 		return function (info, measure) {
 			var new_measure = new Measure();
+                        var rand = info.getRand();
+                        var nextNote = function(octave, lastNote, gamme) {
+
+                          var direction = rand.nextElement(directionList);
+                          var choice = rand.nextInt(1, 6);
+                          var index = gamme.keysUsed.indexOf(KMUSIC.Key.midiToKey(lastNote));
+
+                          switch (choice) {
+                            case 1: // Rest on the same note
+                              break;
+                            case 2: // Can get out of gamme
+                              lastNote += direction;
+                              break;
+                            case 3: /// 1 note
+                              (index == -1) ? lastNote += 2 * direction : index += direction;
+                              break;
+                            case 4: /// 2 notes
+                              (index == -1) ? lastNote += 5 * direction : index += direction * 2;
+                              break;
+                            case 5: /// 4 notes
+                              (index == -1) ? lastNote += 7 * direction : index += direction * 2;
+                              break;
+                            case 6: /// octave
+                              lastNote += direction * 12;
+                              break;
+                          }
+
+                          if (index != -1 && choice >= 3 && choice <= 5) {
+                              if (index < 0)
+                                octave -= 1;
+                              else if (index >= 7)
+                                octave += 1;
+                              lastNote = gamme.keysUsed[(index + 7) % 7].noteNumber + 12 * octave
+                          }
+
+                          return lastNote;
+                        }
 
 			var timeLeft = 4.0;
 			var lastNote = measure.events()[measure.events().length - 1].noteNumber; // Recup last note
 			while (timeLeft > 0) {
 			    var duration = mutateDuration(timeLeft, rand);
-                            var lastNote = nextNote(octave, lastNote, gamme);
-                            new_mesure.buffer.pushNotes([lastNote], duration);
+                            var lastNote = nextNote(Math.floor((lastNote - lastNote % 12) / 12), lastNote, info.getGamme());
+                            new_measure.buffer.pushNotes([lastNote], duration);
+                            timeLeft -= duration;
                         }
-                        var duration = mutateDuration(timeLeft, rand);
-                        // Creer next note
 
 			return new_measure;
 		} 
