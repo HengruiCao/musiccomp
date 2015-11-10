@@ -2,6 +2,7 @@
 
 	//extend existing jsmidi miditrack
 	MidiTrack.prototype.addMidiNote = function (note) {
+        //deprecated
         note.channel = this.channel;
         notes = MidiEvent.createNote(note);
         this.addEvent(notes[0]);
@@ -26,6 +27,13 @@
             channel: this.channel,
             param1: MIDI.GM.byName[instrument].number
         }));
+    }
+
+    MidiTrack.prototype.pauseFor = function (time) {
+        this.addEvent(
+        new MidiEvent({time: time, type: 0x8, // EVT_NOTE_OFF,
+            channel: this.channel, param1:  0, param2: 0
+        }));        
     }
 
 }(window.KMUSIC = window.KMUSIC || {}, jQuery));

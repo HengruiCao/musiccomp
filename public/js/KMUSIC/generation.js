@@ -74,10 +74,13 @@
     	  range.move(i % 2 === 0 ? 12 : 0); //move upper
 
     	  track.info = new KMUSIC.Info({generation: this, range: range, type: 'melody', instrument: instrument});    		
-    	  this.tracks.push(track);
-          var check = this.rand.nextElement(sequenceNumbers)
-          console.log(check);
-    	  
+          track.info.instrument = instrument;
+
+          var melodyLength = this.rand.nextElement(sequenceNumbers);
+
+          this.maxMelodyLength = this.maxMelodyLength && this.maxMelodyLength < melodyLength && melodyLength
+            || melodyLength;
+
           track.info.sequenceGenerators = [
                 KMUSIC.Sequence.generator1({
 	    		generators: [KMUSIC.Measure.generator1()],
@@ -85,8 +88,7 @@
 	    		measureLength : 4,  //this.rand.nextInt(1, 4), //can be rand
                 coreNote : this.rand.nextInt(60, 90),
                 durationFlag : instrument.speed || 0, //speed may not be defined
-	    		//sequenceLength : this.rand.nextElement(sequenceNumbers)})
-	    		sequenceLength : check})
+	    		sequenceLength : melodyLength})
     		];
     	  track.info.sequenceVariations = [
     			KMUSIC.Sequence.changeSequence({
@@ -96,13 +98,14 @@
         			frequence : this.rand.nextInt(2, 5)
         		})
     	  ];
-
+          this.tracks.push(track);
         }
     }
     
     Generation.prototype.generateAccompagnement = function (){
         var nbaccompagnment = this.rand.nextElement([1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 4]);
 
+        console.log(nbaccompagnment + 3);
         for (var i = 0; i < nbaccompagnment + 3; ++i) {
           var test = new MidiTrack({});
 
@@ -118,10 +121,13 @@
     	  range.move(i % 2 === 0 ? 12 : 0); //move upper
 
     	  test.info = new KMUSIC.Info({generation: this, range: range, type: 'melody'});    		
+          test.info.instrument = instrument;
 
           var chordify = i % 2 === 0;
 
           // chordify = true;
+
+          //test.pauseFor(Math.floor(this.maxMelodyLength * i / 2) * 4);
 
     	  test.info.sequenceGenerators = [
 	      KMUSIC.Sequence.generator1({
@@ -152,7 +158,7 @@
         
         this.generateMelodies();
         this.generateAccompagnement();
-    	console.log(tracks);
+        console.log(tracks[0]);
     }
 
     Generation.prototype.tracksToData = function() {

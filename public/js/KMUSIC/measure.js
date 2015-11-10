@@ -154,6 +154,7 @@
 
 	Measure.melodyContinuation = function (params) { // Generate next notes, to be called only once
 		params = params || {};
+
 		var variations = params.variations || [2, -2];;
 		var durationList = params.durationList || [0.5, 0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 4];
 		var durationFlag = params.durationFlag || 0; // 0 Nothing special, 1 - Slow, 2- Fast
@@ -175,6 +176,8 @@
 		return function (info, measure) {
 			var new_measure = new Measure();
             var rand = info.getRand();
+            console.log('haha');
+
             var nextNote = function(octave, lastNote, gamme) {
 
               var direction = rand.nextElement(directionList);

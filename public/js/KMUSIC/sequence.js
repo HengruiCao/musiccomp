@@ -23,14 +23,15 @@
 		//takes a list of measure generators
 		//and repeat the same measure and vary it throughout sequence length
 
-		measureGenerators = params.generators;
-		measureVariations = params.variations;
+		var measureGenerators = params.generators;
+		var measureVariations = params.variations;
 
 		var measureLength = params.measureLength || 1; // How many measures
 
 		var sequenceLength = params.sequenceLength || 2; // How many measures
 		return function (info) {
 			var _ = info.sequence = info.sequence || new Sequence();
+
 			var measure = info.measure = new KMUSIC.Measure();
 			for (var n = 0; n < measureGenerators.length; ++n) {
 				measureGenerators[n](info);
