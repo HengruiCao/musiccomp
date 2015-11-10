@@ -59,12 +59,12 @@
     Generation.prototype.generateMelodies = function (){
         var nbmelodies = 1; // this.rand.nextInt(1, 3);
 
-        var sequenceNumbers = [1, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 7, 8, 9];
+        var sequenceNumbers = [2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 9, 10, 11];
         
         for (var i = 0; i < nbmelodies; ++i) {
           var track = new MidiTrack({});
 
-          track.channel = i;
+          track.channel = i + 1;
           track.setTempo(this.tempo);
           var instrument = this.theme.melody.getInstrument(this.rand);
           track.setMidiInstrument(instrument.name);
@@ -107,7 +107,7 @@
         for (var i = 0; i < nbaccompagnment; ++i) {
           var test = new MidiTrack({});
 
-          test.channel = this.tracks.length;
+          test.channel = this.tracks.length + 1;
           test.setTempo(this.tempo);
           var instrument = this.theme.accomp.getInstrument(this.rand);        
           var instruName = instrument.name || instrument
