@@ -6,6 +6,50 @@
 		this.events = function () {return _.buffer.buffer;}; //an alias to get buffer of notes
 	}
 
+	Measure.chordGeneration = function (params) {
+		params = params || {};
+		return function (info) {
+			var _ = info.measure || new Measure();
+			var r = info.getRand();
+			var g = info.getGamme();
+			var chord = r.nextElement(g.major_chords);
+
+			var range = info.getRange();
+
+			for (var c = 0; c < chord.length; ++c)
+			{
+				_.buffer.pushNotes(range.getNotes(chord[c]), 4, 0);
+			}
+			return _;
+		}
+	}
+
+	Measure.chordProgression = function (params) {
+		params = params || {};
+		return function (info, measure) {
+			var _ = new Measure();
+			var lastChord = [];
+			var events = measure.events();
+			var r = info.getRand();
+			var g = info.getGamme();
+
+			var okChord = g.major_chords.filter(function (chord){
+				return chord.find(function (key) {
+					return events.find(function (e) {
+						return KMUSIC.Key.midiToKey(e.noteNumber) === key;
+					})
+				}) !== undefined;
+			});
+
+			var chord = r.nextElement(okChord);
+			for (var c = 0; c < chord.length; ++c)
+			{
+				_.buffer.pushNotes(range.getNotes(chord[c]), 4, 0);
+			}
+			return _;
+		}
+	}
+
 	Measure.generator1 = function (params) {
 		params = params || {};
 		var durationList = params.durationList || [0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 2, 4];

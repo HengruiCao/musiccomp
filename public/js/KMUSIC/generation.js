@@ -115,10 +115,14 @@
 
     	  test.info = new KMUSIC.Info({generation: this, range: range, type: 'melody'});    		
 
+          var chordify = i % 2 === 0;
+
+          // chordify = true;
+
     	  test.info.sequenceGenerators = [
 	      KMUSIC.Sequence.generator1({
-	    		generators: [KMUSIC.Measure.generator1({balance : 0.9})],
-	    		variations: [KMUSIC.Measure.varyNotes(), KMUSIC.Measure.move()],
+	    		generators: [chordify ? KMUSIC.Measure.chordGeneration() : KMUSIC.Measure.generator1({balance : 0.9})],
+	    		variations: [KMUSIC.Measure.varyNotes(), chordify ?  KMUSIC.Measure.chordGeneration() : KMUSIC.Measure.move()],
 	    		measureLength : 4,  //this.rand.nextInt(1, 4), //can be rand
                         coreNote : this.rand.nextInt(30, 72),
                         durationFlag : instrument.speed || 0, //speed may not be defined
