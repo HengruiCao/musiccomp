@@ -103,8 +103,7 @@
     Generation.prototype.generateAccompagnement = function (){
         var nbaccompagnment = this.rand.nextElement([1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 4]);
 
-        var sequenceNumbers = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4]
-        for (var i = 0; i < nbaccompagnment; ++i) {
+        for (var i = 0; i < nbaccompagnment + 3; ++i) {
           var test = new MidiTrack({});
 
           test.channel = this.tracks.length + 1;
@@ -120,14 +119,18 @@
 
     	  test.info = new KMUSIC.Info({generation: this, range: range, type: 'melody'});    		
 
+          var chordify = i % 2 === 0;
+
+          // chordify = true;
+
     	  test.info.sequenceGenerators = [
 	      KMUSIC.Sequence.generator1({
-	    		generators: [KMUSIC.Measure.generator1({balance : 0.9})],
-	    		variations: [KMUSIC.Measure.varyNotes(), KMUSIC.Measure.move()],
+	    		generators: [chordify ? KMUSIC.Measure.chordGeneration() : KMUSIC.Measure.generator1({balance : 0.9})],
+	    		variations: [KMUSIC.Measure.varyNotes(), chordify ?  KMUSIC.Measure.chordGeneration() : KMUSIC.Measure.move()],
 	    		measureLength : 4,  //this.rand.nextInt(1, 4), //can be rand
                         coreNote : this.rand.nextInt(30, 72),
                         durationFlag : instrument.speed || 0, //speed may not be defined
-	    		sequenceLength : this.rand.nextElement(sequenceNumbers)})
+	    		sequenceLength : this.rand.nextInt(3, 6)})
     		];
 
     	  test.info.sequenceVariations = [

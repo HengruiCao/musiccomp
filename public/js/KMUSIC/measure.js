@@ -6,6 +6,68 @@
 		this.events = function () {return _.buffer.buffer;}; //an alias to get buffer of notes
 	}
 
+	Measure.chordGeneration = function (params) {
+		params = params || {};
+		var chordMode = params.chordMode || 1; //0 press at same time, 1 press in sequence
+		return function (info) {
+			var _ = info.measure || new Measure();
+			var r = info.getRand();
+			var g = info.getGamme();
+			var chord = r.nextElement(g.major_chords);
+
+			var range = info.getRange();
+
+			for (var c = 0; c < chord.length; ++c)
+			{
+				switch (chordMode) {
+					case 1:
+						_.buffer.pushNotes(range.getNotes(chord[c]), 1);
+					default:
+						_.buffer.pushNotes(range.getNotes(chord[c]), 4, 0);
+				}
+			}
+			return _;
+		}
+	}
+
+	Measure.chordProgression = function (params) {
+		params = params || {};
+		var comeback = null;
+		var counter = 0;
+		var loop = params.loop || 4;
+
+		return function (info, measure) {
+			var _ = new Measure();
+			var lastChord = [];
+			var events = measure.events();
+			var r = info.getRand();
+			var g = info.getGamme();
+
+			if (counter < loop)
+			{
+				var okChord = g.major_chords.filter(function (chord){
+					return chord.find(function (key) {
+						return events.find(function (e) {
+							return KMUSIC.Key.midiToKey(e.noteNumber) === key;
+						})
+					}) !== undefined;
+				});
+
+				var chord = r.nextElement(okChord);
+				for (var c = 0; c < chord.length; ++c)
+				{
+					_.buffer.pushNotes(range.getNotes(chord[c]), events[c].duration || 4, events[c].timestamp || 0);
+				}				
+			}
+			else {
+				counter = 0;
+				return comeback;
+			}
+			++counter;
+			return _;
+		}
+	}
+
 	Measure.generator1 = function (params) {
 		params = params || {};
 		var durationList = params.durationList || [0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 2, 4];
