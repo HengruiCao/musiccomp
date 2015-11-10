@@ -70,22 +70,23 @@
 
     	  track.info = new KMUSIC.Info({generation: this, range: range, type: 'melody'});    		
     	  this.tracks.push(track);
-    	  track.info.sequenceGenerators = [
-	  KMUSIC.Sequence.generator1({
+    	  
+          track.info.sequenceGenerators = [
+                KMUSIC.Sequence.generator1({
 	    		generators: [KMUSIC.Measure.generator1()],
 	    		variations: [KMUSIC.Measure.melodyContinuation()],
 	    		measureLength : 4,  //this.rand.nextInt(1, 4), //can be rand
-                        coreNote : this.rand.nextInt(60, 90),
-                        durationFlag : 0,
+                coreNote : this.rand.nextInt(60, 90),
+                durationFlag : 0,
 	    		sequenceLength : this.rand.nextElement(sequenceNumbers)})
     		];
     	  track.info.sequenceVariations = [
     			KMUSIC.Sequence.changeSequence({
     				frequence : 1
     			}),
-    		KMUSIC.Sequence.move({
-    			frequence : this.rand.nextInt(2, 5)
-    		})
+        		KMUSIC.Sequence.move({
+        			frequence : this.rand.nextInt(2, 5)
+        		})
     	  ];
 
         }
@@ -95,27 +96,32 @@
         var nbaccompagnment = this.rand.nextElement([1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 4]);
 
         var sequenceNumbers = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4]
-    	var instruments = ['electric_guitar_muted', 'pizzicato_strings', 'french_horn', 'overdriven_guitar', 'slap_bass', 'tuba', 'xylophone'];
+    	var instruments = ['electric_guitar_muted', 'pizzicato_strings', 'cello', 'choir_aahs', 'overdriven_guitar', 'slap_bass', 'tuba', 'xylophone'];
         for (var i = 0; i < nbaccompagnment; ++i) {
           var test = new MidiTrack({});
 
           test.channel = this.tracks.length;
           test.setTempo(this.tempo);
-          test.setMidiInstrument(this.rand.nextElement(instruments));
-    	  test.setVolume(10);
+          var choiceInstru = this.rand.nextElement(instruments)
+          test.setMidiInstrument(choiceInstru);
+    	  test.setVolume(50);
+          console.log(choiceInstru);
+          if (choiceInstru == 'pizzicato_strings'
     	  var range = new KMUSIC.Range({lowerBound: 36, upperBound: 48}); //24 diff, give more choices
     	  range.move(i % 2 === 0 ? 12 : 0); //move upper
 
     	  test.info = new KMUSIC.Info({generation: this, range: range, type: 'melody'});    		
+
     	  test.info.sequenceGenerators = [
-	  KMUSIC.Sequence.generator1({
-	    		generators: [KMUSIC.Measure.generator2()],
-	    		variations: [KMUSIC.Measure.melodyContinuation()],
+	      KMUSIC.Sequence.generator1({
+	    		generators: [KMUSIC.Measure.generator1({balance : 0.9})],
+	    		variations: [KMUSIC.Measure.varyNotes(), KMUSIC.Measure.move()],
 	    		measureLength : 4,  //this.rand.nextInt(1, 4), //can be rand
                         coreNote : this.rand.nextInt(30, 72),
                         durationFlag : 0,
 	    		sequenceLength : this.rand.nextElement(sequenceNumbers)})
     		];
+
     	  test.info.sequenceVariations = [
     			KMUSIC.Sequence.changeSequence({
     				frequence : 1

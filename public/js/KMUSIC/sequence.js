@@ -62,6 +62,7 @@
 		var sequenceStack = [];
 		return function (info, sequence) {
 			if (counter == 0 && sequenceStack.length == 0) {				
+				current = info.getRand().nextInt(0, frequence);
 				sequenceStack.push(sequence);
 			}
 			++counter;	
@@ -74,11 +75,11 @@
 					for (var n = 0; n < info.sequenceGenerators.length; ++n) {
 	    				info.sequence = (info.sequenceGenerators[n])(info);
 			    	}
+					sequenceStack.push(info.sequence);
 				}
 				else 
 				{
 					info.sequence = info.getRand().nextElement(sequenceStack);
-					sequenceStack.push(info.sequence);
 				}
 				counter = 0;
 			} 

@@ -78,8 +78,12 @@
 		{
 			var note = this.buffer[n];
 			if (note.noteNumber > 0) {
-				OnOffs.push({type : 'on', timestamp : (note.timestamp) * beatLength + 1, noteNumber : note.noteNumber});
-				OnOffs.push({type : 'off', timestamp : (note.timestamp + note.duration) * beatLength- 1, noteNumber : note.noteNumber});
+				OnOffs.push({type : 'on',
+					timestamp : (note.timestamp) * beatLength + 1,
+					noteNumber : note.noteNumber, volume : note.volume});
+				OnOffs.push({type : 'off',
+					timestamp : (note.timestamp + note.duration) * beatLength- 1,
+					noteNumber : note.noteNumber, volume : note.volume});
 			}
 		}
 		OnOffs.sort(function(a, b) {
@@ -99,13 +103,14 @@
  		{
  			var e = events[n];
  			var delay = (e.timestamp - timestamp);
+ 			var volume = Math.floor((track.masterVolume || 127) * (e.volume));
  			track.addEvent(
  				(e.type === 'on' ?
  				new MidiEvent({time: delay, type: 0x9, // EVT_NOTE_ON,
- 					channel: track.channel, param1:  e.noteNumber, param2:  127
+ 					channel: track.channel, param1:  e.noteNumber, param2: volume
     			}) :
  				new MidiEvent({time: delay, type: 0x8, // EVT_NOTE_OFF,
- 					channel: track.channel, param1:  e.noteNumber, param2:  127
+ 					channel: track.channel, param1:  e.noteNumber, param2: volume
     			}))
 
  				);
@@ -121,8 +126,13 @@
 	var Note = KMUSIC.Note = function (noteNumber, duration, timestamp){
 		this.noteNumber = noteNumber;
 		this.duration = duration;
-		this.timestamp = timestamp;		
+		this.timestamp = timestamp;
+		this.volume = 1;		
 	};
+	Note.prototype.setVolume = function(volume) {
+		this.volume = volume || this.volume;
+		return this.volume;
+	}
 	Note.prototype.end = function() {
 		return this.duration + this.timestamp;
 	}
