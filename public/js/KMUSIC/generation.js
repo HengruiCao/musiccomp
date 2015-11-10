@@ -99,8 +99,7 @@
     Generation.prototype.generateAccompagnement = function (){
         var nbaccompagnment = this.rand.nextElement([1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 4]);
 
-        var sequenceNumbers = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4]
-        for (var i = 0; i < nbaccompagnment; ++i) {
+        for (var i = 0; i < nbaccompagnment + 3; ++i) {
           var test = new MidiTrack({});
 
           test.channel = this.tracks.length;
@@ -126,7 +125,7 @@
 	    		measureLength : 4,  //this.rand.nextInt(1, 4), //can be rand
                         coreNote : this.rand.nextInt(30, 72),
                         durationFlag : instrument.speed || 0, //speed may not be defined
-	    		sequenceLength : this.rand.nextElement(sequenceNumbers)})
+	    		sequenceLength : this.rand.nextInt(3, 6)})
     		];
 
     	  test.info.sequenceVariations = [
