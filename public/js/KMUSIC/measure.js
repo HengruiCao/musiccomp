@@ -72,7 +72,7 @@
 		params = params || {};
 		var variations = params.variations || [2, -2];;
 		return function (info, measure) {
-			var diff = info.rand.nextElement(variations); //to be coherent with gamme
+			var diff = info.getRand().nextElement(variations); //to be coherent with gamme
 			var new_measure = new Measure(measure);
 
 			var events = new_measure.events();
@@ -183,7 +183,7 @@
 
 				var note = notes[index];
 
-				note = rand.nextElement(gamme.keysUsed);				
+				note = rand.nextElement(info.getGamme().keysUsed);				
 			}
 			return new_measure;			
 		}

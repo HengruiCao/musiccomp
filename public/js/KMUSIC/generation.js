@@ -56,7 +56,7 @@
     Generation.prototype.generateMelodies = function (){
         var nbmelodies = 1; // this.rand.nextInt(1, 3);
 
-        var sequenceNumbers = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 8, 9]
+        var sequenceNumbers = [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 8, 9]
     	var instruments = ['bright_acoustic_piano', 'acoustic_grand_piano', 'timpani', 'viola', 'acoustic_guitar_steel'];
         for (var i = 0; i < nbmelodies; ++i) {
           var track = new MidiTrack({});
@@ -64,35 +64,36 @@
           track.channel = i;
           track.setTempo(this.tempo);
           track.setMidiInstrument(this.rand.nextElement(instruments));
-    	  track.setVolume(10);
+    	  track.setVolume(50);
     	  var range = new KMUSIC.Range({lowerBound: 36, upperBound: 48}); //24 diff, give more choices
     	  range.move(i % 2 === 0 ? 12 : 0); //move upper
 
     	  track.info = new KMUSIC.Info({generation: this, range: range, type: 'melody'});    		
     	  this.tracks.push(track);
-    	  track.info.sequenceGenerators = [
-	  KMUSIC.Sequence.generator1({
+    	  
+          track.info.sequenceGenerators = [
+                KMUSIC.Sequence.generator1({
 	    		generators: [KMUSIC.Measure.generator1()],
 	    		variations: [KMUSIC.Measure.melodyContinuation()],
 	    		measureLength : 4,  //this.rand.nextInt(1, 4), //can be rand
-                        coreNote : this.rand.nextInt(60, 90),
-                        durationFlag : 0,
+                coreNote : this.rand.nextInt(60, 90),
+                durationFlag : 0,
 	    		sequenceLength : this.rand.nextElement(sequenceNumbers)})
     		];
     	  track.info.sequenceVariations = [
     			KMUSIC.Sequence.changeSequence({
     				frequence : 1
     			}),
-    		KMUSIC.Sequence.move({
-    			frequence : this.rand.nextInt(2, 5)
-    		})
+        		KMUSIC.Sequence.move({
+        			frequence : this.rand.nextInt(2, 5)
+        		})
     	  ];
 
         }
     }
     
     Generation.prototype.generateAccompagnement = function (){
-        var nbaccompagnment = this.rand.nextInt(1, 4);
+        var nbaccompagnment = this.rand.nextInt(2, 5);
 
         var sequenceNumbers = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4]
     	var instruments = ['electric_guitar_muted', 'taiko_drum','pizzicato_strings', 'overdriven_guitar', 'xylophone'];
@@ -102,20 +103,22 @@
           test.channel = this.tracks.length;
           test.setTempo(this.tempo);
           test.setMidiInstrument(this.rand.nextElement(instruments));
-    	  test.setVolume(10);
+    	  test.setVolume(50);
     	  var range = new KMUSIC.Range({lowerBound: 36, upperBound: 48}); //24 diff, give more choices
     	  range.move(i % 2 === 0 ? 12 : 0); //move upper
 
     	  test.info = new KMUSIC.Info({generation: this, range: range, type: 'melody'});    		
+
     	  test.info.sequenceGenerators = [
-	  KMUSIC.Sequence.generator1({
-	    		generators: [KMUSIC.Measure.generator2()],
-	    		variations: [KMUSIC.Measure.melodyContinuation()],
+	      KMUSIC.Sequence.generator1({
+	    		generators: [KMUSIC.Measure.generator1({balance : 0.9})],
+	    		variations: [KMUSIC.Measure.varyNotes(), KMUSIC.Measure.move()],
 	    		measureLength : 4,  //this.rand.nextInt(1, 4), //can be rand
                         coreNote : this.rand.nextInt(30, 50),
                         durationFlag : 0,
 	    		sequenceLength : this.rand.nextElement(sequenceNumbers)})
     		];
+
     	  test.info.sequenceVariations = [
     			KMUSIC.Sequence.changeSequence({
     				frequence : 1
