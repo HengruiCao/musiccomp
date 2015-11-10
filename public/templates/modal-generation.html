@@ -5,8 +5,27 @@
 		    <label>Seed</label>
 		    <input class="form-control" ng-model="$parent.seed">
 		</div>
-		<button class="btn btn-default" ng-click="generate($parent.seed)">Regenerate</button>
-		<button class="btn btn-default" ng-click="exportSong(currentSong)">Download</button>
+		<div >                    
+		    <label>Theme</label>
+		    <div style="color:black;">
+
+		    <select ng-model="params.theme"
+		    ng-options="theme.name for theme in themeOptions" class="form-control">
+		    <option value="">random</option>
+		    </select> 
+		    </div>
+		</div>
+
+		<div style="padding-bottom:10px;">
+			<label>Tempo</label>
+			<input type="range" min="60" max="180" defaultValue="120" ng-model="params.tempo"/>
+		</div>
+
+		<div class="clearfix">
+
+		<button class="btn btn-default pull-left" ng-click="generate($parent.seed)">Regenerate</button>
+		<button class="btn btn-default pull-left" ng-click="exportSong(currentSong)">Download</button>
+		</div>
 	</div>
 </div>
 </div>
