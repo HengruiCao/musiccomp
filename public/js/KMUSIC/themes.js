@@ -73,8 +73,8 @@
 			instruments: ['acoustic_guitar_steel', 'electric_guitar_clean', 'electric_grand_piano', 'lead_6_voice']
 		},
 		accomp: {
-			defaultVolume: 30,
-			instruments: [{name : 'steel_drums', volume: 100}, 'slap_bass_1', 'pad_2_warm', 'whistle','electric_bass_pick', 'electric_bass_finger', 'percussive_organ']
+			defaultVolume: 15,
+			instruments: [{name : 'steel_drums', volume: 20}, 'slap_bass_1', {name: 'pad_2_warm', volume: 10, durationFlag: 3},'electric_bass_pick', 'electric_bass_finger']
 		}
 	}),
 
