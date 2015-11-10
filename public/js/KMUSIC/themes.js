@@ -38,13 +38,66 @@
 		},
 		accomp: {
 			defaultVolume: 50,
-			instruments: ['electric_guitar_muted', 'taiko_drum','pizzicato_strings', 'overdriven_guitar', 'xylophone']
+			instruments: ['electric_guitar_muted', 'taiko_drum','pizzicato_strings', 'acoustic_grand_piano', 'xylophone']
 		}
 	}),
+
+	new Theme({
+		name : 'folk',
+		melody: {
+			instruments: ['acoustic_guitar_steel', 'pizzicato_strings']
+
+		},
+		accomp: {
+			defaultVolume: 20,
+			instruments: [{name : 'steel_drums', volume: 40}, 'electric_guitar_muted', 'acoustic_grand_piano', {name: 'reveser_cymbal', volume: 30, spead: 1}, 'synth_drum', 'fretless_bass', 'trombone', 'electric_bass_pick']
+
+		}
+	}),
+
+	new Theme({
+		name : 'pop',
+		melody: {
+			instruments: ['electric_guitar_clean']
+
+		},
+		accomp: {
+			defaultVolume: 20,
+			instruments: [{name : 'steel_drums', volume: 40}, 'electric_guitar_muted', 'acoustic_grand_piano', 'slap_bass_1', 'rock_organ', 'electric_bass_pick', 'electric_bass_finger']
+
+		}
+	}),
+
+	new Theme({
+		name : 'western',
+		melody: {
+			instruments: ['acoustic_guitar_steel', 'electric_guitar_pick', 'electric_grand_piano', 'lead_6_voice']
+
+		},
+		accomp: {
+			defaultVolume: 20,
+			instruments: [{name : 'steel_drums', volume: 40}, '', 'slap_bass_1', 'pad_2_warm', 'whistle','electric_bass_pick', 'electric_bass_finger', 'percussive_organ']
+
+		}
+	}),
+
+	new Theme({
+		name : 'jazz',
+		melody: {
+			instruments: [{name: 'contrabass', volume: 60, speed: 0}, {name: 'steel_drums', volume: 50},'bright_acoustic_piano', 'acoustic_grand_piano', 'trombone', {name:'tenor_sax', volume : 60}, 'clavinet' ] 
+
+		},
+		accomp: {
+			defaultVolume: 20,
+			instruments: [{name : 'steel_drums', volume: 20}, {name: 'acoustic_grand_piano', volume: 50}, 'english_horn', 'electric_guitar_jazz']
+
+		}
+	}),
+
 	new Theme({
 		name : 'taiko only',
 		melody: {
-			instruments: [{name: 'taiko_drum', volume: 50, speed: 30}] //an example
+			instruments: [{name: 'taiko_drum', volume: 80, speed: 30}] //an example
 		},
 		accomp: {
 			defaultVolume: 50,
