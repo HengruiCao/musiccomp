@@ -59,7 +59,8 @@
     Generation.prototype.generateMelodies = function (){
         var nbmelodies = 1; // this.rand.nextInt(1, 3);
 
-        var sequenceNumbers = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 8, 9];
+        var sequenceNumbers = [1, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 7, 8, 9];
+        
         for (var i = 0; i < nbmelodies; ++i) {
           var track = new MidiTrack({});
 
@@ -74,6 +75,8 @@
 
     	  track.info = new KMUSIC.Info({generation: this, range: range, type: 'melody', instrument: instrument});    		
     	  this.tracks.push(track);
+          var check = this.rand.nextElement(sequenceNumbers)
+          console.log(check);
     	  
           track.info.sequenceGenerators = [
                 KMUSIC.Sequence.generator1({
@@ -82,7 +85,8 @@
 	    		measureLength : 4,  //this.rand.nextInt(1, 4), //can be rand
                 coreNote : this.rand.nextInt(60, 90),
                 durationFlag : instrument.speed || 0, //speed may not be defined
-	    		sequenceLength : this.rand.nextElement(sequenceNumbers)})
+	    		//sequenceLength : this.rand.nextElement(sequenceNumbers)})
+	    		sequenceLength : check})
     		];
     	  track.info.sequenceVariations = [
     			KMUSIC.Sequence.changeSequence({
@@ -106,8 +110,9 @@
           test.channel = this.tracks.length;
           test.setTempo(this.tempo);
           var instrument = this.theme.accomp.getInstrument(this.rand);        
+          var instruName = instrument.name || instrument
 
-          test.setMidiInstrument(instrument.name);
+          test.setMidiInstrument(instruName);
     	  test.setVolume(instrument.volume);
 
     	  var range = new KMUSIC.Range({lowerBound: 36, upperBound: 48}); //24 diff, give more choices
@@ -137,8 +142,6 @@
 
         }
     }
-
-
 
     Generation.prototype.initialiseTracks = function (){
     	var tracks = this.tracks = [];
