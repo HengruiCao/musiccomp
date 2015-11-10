@@ -21,7 +21,7 @@
 			{
 				switch (chordMode) {
 					case 1:
-						_.buffer.pushNotes(range.getNotes(chord[c]), 1);
+						_.buffer.pushNotes(range.getNotes(chord[c]), 1, c);
 					default:
 						_.buffer.pushNotes(range.getNotes(chord[c]), 4, 0);
 				}
@@ -98,7 +98,7 @@
 					//change note
 					note = rand.nextElement(gamme.keysUsed);
 				}
-					duration = mutateDuration(timeLeft, rand);
+				duration = mutateDuration(timeLeft, rand);
 
    			   	_.buffer.pushNotes(range.getNotes(note), duration);
 			   	timeLeft -= duration;
@@ -112,21 +112,21 @@
                 var coreNote = params.coreNote || 36
 		return function (info) {
 		    var gamme = info.getGamme();
-		    var _ = info.measure || new Measure();
-                    var rand = info.getRand();
-                    var mainNote = gamme.keysUsed[rand.nextInt(0, 6)].noteNumber +  (coreNote - coreNote % 12) 
+		    var _ = new Measure();
+            var rand = info.getRand();
+            var mainNote = gamme.keysUsed[rand.nextInt(0, 6)].noteNumber + (coreNote - coreNote % 12) 
 
-                    var durationKind = [rand.nextElement(durationList), rand.nextElement(durationList)];
-                    var timeLeft = 4.0;
-                    while (timeLeft != 0) {
-                      var dur = durationKind[rand.nextInt(0, 1)];
+            var durationKind = [rand.nextElement(durationList), rand.nextElement(durationList)];
+            var timeLeft = 4.0;
+            while (timeLeft != 0) {
+              var dur = durationKind[rand.nextInt(0, 1)];
 
-                      if (dur > timeLeft)
-                        dur = timeLeft;
+              if (dur > timeLeft)
+                dur = timeLeft;
 
-   		      _.buffer.pushNotes([mainNote], dur);
-                      timeLeft -= dur;
-                    }
+		      _.buffer.pushNotes([mainNote], dur);
+	              timeLeft -= dur;
+            }
 		}
 	}
 
@@ -167,7 +167,6 @@
                 var coreNote = params.coreNote || 60
 		var mutateDuration = function (time, rand) {
 			var dur = rand.nextElement(durationList);
-
 			while (dur > time) {
 		  		dur = dur / 2.0;
 			}
@@ -176,8 +175,6 @@
 		return function (info, measure) {
 			var new_measure = new Measure();
             var rand = info.getRand();
-            console.log('haha');
-
             var nextNote = function(octave, lastNote, gamme) {
 
               var direction = rand.nextElement(directionList);

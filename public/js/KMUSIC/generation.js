@@ -40,12 +40,8 @@
     	for (var n = 0; n < this.sequenceGenerators.length; ++n) {
     		sequence = (this.sequenceGenerators[n])(this);
     	}
-    	var len = sequence.measures.length;
-    	for (var i = 0; i < totalMeasureLength; i += len) {
+    	for (var i = 0; i < totalMeasureLength; i += sequence.measures.length) {
 
-    		for (var a = 0; a < len; ++a) {
-    			//sequence.measures[a].buffer.addToTrack(track); //both methods have same effect
-    		}
   			sequence.addToTrack(track);
 
     		//variate sequence
@@ -105,7 +101,8 @@
     Generation.prototype.generateAccompagnement = function (){
         var nbaccompagnment = this.rand.nextElement([1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 4]);
 
-        console.log(nbaccompagnment + 3);
+        console.log('accompagnment count ' + (nbaccompagnment + 3));
+        this.pauseMult = this.rand.nextInt(0, 4) * this.maxMelodyLength;
         for (var i = 0; i < nbaccompagnment + 3; ++i) {
           var test = new MidiTrack({});
 
@@ -125,9 +122,8 @@
 
           var chordify = i % 2 === 0;
 
-          // chordify = true;
-
-          //test.pauseFor(Math.floor(this.maxMelodyLength * i / 2) * 4);
+          // chordify = false;   
+          test.pauseFor(this.pauseMult * i);
 
     	  test.info.sequenceGenerators = [
 	      KMUSIC.Sequence.generator1({
@@ -136,7 +132,7 @@
 	    		measureLength : 4,  //this.rand.nextInt(1, 4), //can be rand
                         coreNote : this.rand.nextInt(30, 72),
                         durationFlag : instrument.speed || 0, //speed may not be defined
-	    		sequenceLength : this.rand.nextInt(3, 6)})
+	    		        sequenceLength : this.rand.nextInt(3, 6)})
     		];
 
     	  test.info.sequenceVariations = [
@@ -154,11 +150,10 @@
 
     Generation.prototype.initialiseTracks = function (){
     	var tracks = this.tracks = [];
-        var sequenceNumbers = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 8, 9]
-        
+        var sequenceNumbers = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 8, 9]        
         this.generateMelodies();
         this.generateAccompagnement();
-        console.log(tracks[0]);
+        console.log('melody length ' + this.maxMelodyLength);
     }
 
     Generation.prototype.tracksToData = function() {
@@ -177,7 +172,10 @@
     		var track = this.tracks[t];
     		var info = track.info;
 
-    		info.addSequence(track, 40);
+            var totalMeasureLength = this.maxMelodyLength * this.rand.nextInt(6, 10);
+
+            totalMeasureLength -= this.pauseMult * t;
+    		info.addSequence(track, totalMeasureLength);
 	    }
     }
 

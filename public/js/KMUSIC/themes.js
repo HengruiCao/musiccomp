@@ -50,8 +50,7 @@
 		},
 		accomp: {
 			defaultVolume: 20,
-			instruments: [{name : 'steel_drums', volume: 40}, 'electric_guitar_muted', 'acoustic_grand_piano', {name: 'reveser_cymbal', volume: 30, spead: 1}, 'synth_drum', 'fretless_bass', 'trombone', 'electric_bass_pick']
-
+			instruments: [{name : 'steel_drums', volume: 40}, 'electric_guitar_muted', 'acoustic_grand_piano', {name: 'revese_cymbal', volume: 30, spead: 1}, 'synth_drum', 'fretless_bass', 'trombone', 'electric_bass_pick']
 		}
 	}),
 
@@ -71,13 +70,11 @@
 	new Theme({
 		name : 'western',
 		melody: {
-			instruments: ['acoustic_guitar_steel', 'electric_guitar_pick', 'electric_grand_piano', 'lead_6_voice']
-
+			instruments: ['acoustic_guitar_steel', 'electric_guitar_clean', 'electric_grand_piano', 'lead_6_voice']
 		},
 		accomp: {
-			defaultVolume: 20,
-			instruments: [{name : 'steel_drums', volume: 40}, '', 'slap_bass_1', 'pad_2_warm', 'whistle','electric_bass_pick', 'electric_bass_finger', 'percussive_organ']
-
+			defaultVolume: 80,
+			instruments: [{name : 'steel_drums', volume: 100}, 'slap_bass_1', 'pad_2_warm', 'whistle','electric_bass_pick', 'electric_bass_finger', 'percussive_organ']
 		}
 	}),
 
@@ -97,10 +94,10 @@
 	new Theme({
 		name : 'taiko only',
 		melody: {
-			instruments: [{name: 'taiko_drum', volume: 80, speed: 30}] //an example
+			instruments: [{name: 'taiko_drum', volume: 100, speed: 30}] //an example
 		},
 		accomp: {
-			defaultVolume: 50,
+			defaultVolume: 100,
 			instruments: ['taiko_drum']
 		}
 	})];

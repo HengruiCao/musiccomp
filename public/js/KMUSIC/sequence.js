@@ -9,7 +9,11 @@
 			var buffer = new KMUSIC.Buffer();
 			for (var n = 0; n < _.measures.length; ++n) {
 				var events = _.measures[n].events();
+				if (_.measures[n].buffer.timestamp > 4.0)
+					console.log('bug');
 				for (var e = 0; e < events.length; ++e) {
+					// if (events[e].end() > 4.0)
+					// 	break ;
 					buffer.pushNotes([events[e].noteNumber],
 						events[e].duration, events[e].timestamp + timestamp);
 				}

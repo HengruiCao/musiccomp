@@ -18,7 +18,7 @@
 	}
 
 	Buffer.prototype.pushNotes = function (noteNumbers, duration, timestamp){
-		timestamp = timestamp || this.timestamp;
+		timestamp = timestamp === undefined ? this.timestamp : timestamp;
 		duration = duration || 1; //default one beat
 		for (var n = 0; n < noteNumbers.length; ++n)
 		{
@@ -33,6 +33,7 @@
 	//replace current notes;
 	//with [] noteNumbers, silence given period
 	Buffer.prototype.replaceNotes = function(noteNumbers, duration, timestamp){
+		timestamp = timestamp === undefined ? this.timestamp : timestamp;
 		for (var n = 0; n < this.buffer.length; ++n)
 		{
 			var note = this.buffer[n];
