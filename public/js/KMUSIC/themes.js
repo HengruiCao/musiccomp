@@ -73,7 +73,7 @@
 			instruments: ['acoustic_guitar_steel', 'electric_guitar_clean', 'electric_grand_piano', 'lead_6_voice']
 		},
 		accomp: {
-			defaultVolume: 80,
+			defaultVolume: 30,
 			instruments: [{name : 'steel_drums', volume: 100}, 'slap_bass_1', 'pad_2_warm', 'whistle','electric_bass_pick', 'electric_bass_finger', 'percussive_organ']
 		}
 	}),
@@ -81,7 +81,7 @@
 	new Theme({
 		name : 'jazz',
 		melody: {
-			instruments: [{name: 'contrabass', volume: 60, speed: 0}, {name: 'steel_drums', volume: 50},'bright_acoustic_piano', 'acoustic_grand_piano', 'trombone', {name:'tenor_sax', volume : 60}, 'clavinet' ] 
+			instruments: [{name: 'contrabass', volume: 60, speed: 1}, {name: 'steel_drums', volume: 50},'bright_acoustic_piano', 'acoustic_grand_piano', 'trombone', {name:'tenor_sax', volume : 60}, 'clavinet' ] 
 
 		},
 		accomp: {
@@ -94,7 +94,7 @@
 	new Theme({
 		name : 'taiko only',
 		melody: {
-			instruments: [{name: 'taiko_drum', volume: 100, speed: 30}] //an example
+			instruments: [{name: 'taiko_drum', volume: 100, speed: 0}] //an example
 		},
 		accomp: {
 			defaultVolume: 100,

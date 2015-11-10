@@ -110,6 +110,13 @@
 		params = params || {};
 		var durationList = params.durationList || [0.5, 0.5, 0.5, 1, 1, 1, 1, 2, 2, 2, 4, 4, 4, 4];
                 var coreNote = params.coreNote || 36
+		var durationFlag = params.durationFlag || 0; // 0 Nothing special, 1 - Slow, 2- Fast
+                if (durationFlag == 1)
+		    var durationList = params.durationList || [1, 1, 1, 1, 2, 2, 4];
+                else if (durationFlag == 2)
+		    var durationList = params.durationList || [0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 1, 1, 1, 1, 2, 0.25];
+                else if (durationFlag == 3)
+                    var durationList = [4, 4, 4, 8]
 		return function (info) {
 		    var gamme = info.getGamme();
 		    var _ = new Measure();
