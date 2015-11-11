@@ -6,15 +6,29 @@
 ## How to
 
 ```
+$> npm install
 $> npm start
-
-Open a modern browser and go to localhost:8080
+Open a modern browser and go to [localhost:8080](localhost:8080)
 ```
 
 Or
 ```
 Open public/index.html with a modern browser
 ```
+
+Hope you can 'enjoy' the 'music'!
+
+
+## The project
+
+Creates midi file on-the-fly with our random music composition algorithm.
+Visualization is using project [Party mode](https://github.com/preziotte/party-mode)
+
+Same seed will give same midi notes in the file
+Generation panel can be open-ed by pressing 'r', where you can select instrument-set to be used, change seed, or tempo
+
+Random generated midi file can be downloaded, feel free to download and edit any potential good sounding music!
+
 
 ### Many thanks to the authors of these libraries/projects
 
