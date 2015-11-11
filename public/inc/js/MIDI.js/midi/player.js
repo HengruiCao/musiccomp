@@ -114,7 +114,6 @@ midi.loadMidiFile = function(onsuccess, onprogress, onerror) {
 		///
 		// console.log(midi.getFileInstruments());
 		MIDI.loadPlugin({
-			soundfontUrl: "res/FluidR3_GM/",
  			instruments: midi.getFileInstruments(),
 			onsuccess: onsuccess,
 			onprogress: onprogress,

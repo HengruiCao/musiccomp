@@ -50,7 +50,7 @@
 		},
 		accomp: {
 			defaultVolume: 20,
-			instruments: [{name : 'steel_drums', volume: 40}, 'electric_guitar_muted', 'acoustic_grand_piano', {name: 'revese_cymbal', volume: 30, spead: 1}, 'synth_drum', 'fretless_bass', 'trombone', 'electric_bass_pick']
+			instruments: [{name : 'steel_drums', volume: 40}, 'electric_guitar_muted', 'acoustic_grand_piano', {name: 'reverse_cymbal', volume: 30, spead: 1}, 'synth_drum', 'fretless_bass', 'trombone', 'electric_bass_pick']
 		}
 	}),
 

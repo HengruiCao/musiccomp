@@ -86,7 +86,7 @@ app_module.controller('main_controller', function($scope) {
 
 
     MIDI.loadPlugin({
-        soundfontUrl: "res/FluidR3_GM/",
+        soundfontUrl: "https://raw.githubusercontent.com/gleitz/midi-js-soundfonts/master/FluidR3_GM/",
         instruments : ['acoustic_grand_piano', 'synth_drum'],
         onsuccess : function(){
             console.log('finish');
